@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Device Control</title>
+		<style>
+		    .picture {
+				font-size: 16px;
+				font-weight: 700;
+				color: #000000;
+				line-height: 1.3;
+				padding: 15px 36px;
+				width: 240px;
+				box-sizing: border-box;
+				margin: 4px 2px;
+				border: 2px solid #4CAF50; /* Green */
+				box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+				appearance: none;
+				background-color: #fff;
+				background-position: right .7em top 50%, 0 0;
+				background-size: .65em auto, 100%;
+			}
+			.pmode {
+				width: 164px;
+			}
+			.button {
+				width: 120px;
+				font-weight: 700;
+				border: none;
+				color: white;
+				padding: 15px 36px;
+				text-align: center;
+				font-size: 16px;
+				margin: 4px 2px;
+				cursor: pointer;
+				box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+				background-color: white; 
+				color: black; 
+				border: 2px solid #4CAF50; /* Green */
+			}
+			.button:hover {
+				color: white;
+				background-color: #4CAF50; /* Green */
+			}
+			.button2 {
+				background-color: white; 
+				color: black; 
+				border: 2px solid #008CBA; /* Blue */
+			}
+			.button2:hover {
+				color: white;
+				background-color: #008CBA; /* Blue */
+			}
+			.mbutton {
+				width: 240px;
+				font-weight: 700;
+				border: none;
+				color: white;
+				padding: 15px 36px;
+				text-align: center;
+				font-size: 16px;
+				margin: 4px 2px;
+				cursor: pointer;
+				box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+				background: url(mode2.png);
+			}
+
+			.button3 {
+				background-color: white; 
+				color: black; 
+				border: 2px solid #008CBA; /* Blue */
+				/*background: none;*/
+			}
+			.button3:hover {
+				color: white;
+				background-color: #008CBA; /* Blue */
+			}
+		
+			/* SELECT */
+			.select-css {
+				font-size: 16px;
+				font-weight: 700;
+				color: #000000;
+				line-height: 1.3;
+				padding: 15px 36px;
+				width: 240px;
+				box-sizing: border-box;
+				margin: 4px 2px;
+				border: 2px solid #4CAF50; /* Green */
+				box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+				appearance: none;
+				background-color: #fff;
+				background-position: right .7em top 50%, 0 0;
+				background-size: .65em auto, 100%;
+				cursor: pointer;
+			}
+
+			.select-css:hover {
+				color: white;
+				background-color: #4CAF50; /* Green */
+			}
+	
+
+		</style>
+    </head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <body>
+		<div class="w3-container w3-teal">
+			<header>
+				<h1>Device</h1>
+			</header>
+		</div>
+		
+        <div class="w3-container w3-third">
+			<h2>Select the Mode</h2>
+			<div class="w3-container">
+				<p>Determine the type of current:</p>
+				
+				<select class="select-css selectMode">
+					<option value="1">Mode 1</option>
+					<option value="2">Mode 2</option>
+					<option value="3">Mode 3</option>
+					<option value="4">Mode 4</option>
+					<option value="5">Mode 5</option>
+					<option value="6">Mode 6</option>
+					<option value="7">Mode 7</option>
+					<option value="8">Random</option>
+				</select>
+
+				<div class="picture">
+					<label>Mode 1:</label>
+					<img class="pmode" src="mode1.png">
+					<label>Mode 2:</label>
+					<img class="pmode" src="mode2.png">
+					<label>Mode 3:</label>
+					<img class="pmode" src="mode3.png">
+					<label>Mode 4:</label>
+					<img class="pmode" src="mode4.png">
+					<label>Mode 5:</label>
+					<img class="pmode" src="mode5.png">
+					<label>Mode 6:</label>
+					<img class="pmode" src="mode6.png">
+					<label>Mode 7:</label>
+					<img class="pmode" src="mode7.png">
+				</div>
+				
+			</div>
+		</div>
+		
+		<div class="w3-container w3-third">
+			<h2>Control the Device</h2>
+			<h3>Power</h3>
+			<div class="w3-container">
+				<div class="w3-container w3-third">
+					<button class="button btnPowerOn">ON</button>
+				</div>
+				<div class="w3-container w3-third">
+					<label>STATUS</label>
+					<div class="labPower1">?</div>
+				</div>
+				<div class="w3-container w3-third">
+					<button class="button btnPowerOff">OFF</button>
+				</div>
+			</div>
+			<p>Determine the type of current:</p>
+			<div class="w3-container">
+				<div class="w3-container w3-third">
+					<button class="button btnMode">Mode</button>
+				</div>
+				<div class="w3-container w3-third">
+					<label>MODE</label>
+					<div class="labMode1">?</div>
+				</div>
+				<div class="w3-container w3-third">
+					<div class="button btnElectricityMinus">-</div>
+				</div>
+			</div>
+			<p>Determine the level of electricity:</p>
+			<div class="w3-container">
+				<div class="w3-container w3-third">
+					<button class="button btnElectricityPlus">+</button>
+				</div>
+				<div class="w3-container w3-third">
+					<label>LEVEL</label>
+					<div class="labElectricity1">?</div>
+				</div>
+				<div class="w3-container w3-third">
+					<div class="button btnElectricityMinus">-</div>
+				</div>
+			</div>
+			<h3>Random</h3>
+			<p>Determine the minimum amount of electricity:</p>
+			<div class="w3-container">
+				<div class="w3-container w3-third">
+					<button class="button btnRandMinPlus">+</button>
+				</div>
+				<div class="w3-container w3-third">
+					<label>MIN</label>
+					<div class="labRandMin">?</div>
+				</div>
+				<div class="w3-container w3-third">
+					<button class="button btnRandMinMinus">-</button>
+				</div>
+			</div>
+			<p>Determine the maximum amount of electricity:</p>
+			<div class="w3-container">
+				<div class="w3-container w3-third">
+					<button class="button btnRandMaxPlus">+</button>
+				</div>
+				<div class="w3-container w3-third">
+					<label>MAX</label>
+					<div class="labRandMax">?</div>
+				</div>
+				<div class="w3-container w3-third">
+					<button class="button btnRandMaxMinus">-</button>
+				</div>
+			</div>
+		</div>
+		<div class="w3-container w3-third">
+			<h2>Current Device Status</h2>
+			<h3>Power</h3>
+			<div class="w3-container">
+				<div class="labPower2">?</div>
+			</div>
+			<h3>Mode</h3>
+			<div class="w3-container">
+				<div class="labMode">?</div>
+			</div>
+			<h3>Level</h3>
+			<div class="w3-container">
+				<div class="labElectricity2">?</div>
+			</div>
+		</div>
+		
+		<script>
+            var btnPowerOn = document.querySelector('.btnPowerOn'),
+				btnPowerOff = document.querySelector('.btnPowerOff'),
+				labPower1 = document.querySelector('.labPower1'),
+				labPower2 = document.querySelector('.labPower2'),
+				btnElectricityMinus = document.querySelector('.btnElectricityMinus'),
+				btnElectricityPlus = document.querySelector('.btnElectricityPlus'),
+				labElectricity1 = document.querySelector('.labElectricity1'),
+				labElectricity2 = document.querySelector('.labElectricity2'),
+				btnRandMinPlus = document.querySelector('.btnRandMinPlus'),
+				btnRandMinMinus = document.querySelector('.btnRandMinMinus'),
+				labRandMin = document.querySelector('.labRandMin'),
+				btnRandMaxPlus = document.querySelector('.btnRandMaxPlus'),
+				btnRandMaxMinus = document.querySelector('.btnRandMaxMinus'),
+				labRandMax = document.querySelector('.labRandMax'),
+				selectMode = document.querySelector('.selectMode'),
+				btnMode = document.querySelector('.btnMode'),
+				labMode = document.querySelector('.labMode'),
+                users = document.querySelector('.users'),
+                websocket = new WebSocket("ws://192.168.1.133:6789/");
+
+			btnPowerOn.onclick = function (event) {
+                websocket.send(JSON.stringify({action: 'btnPowerOn'}));
+            }
+            btnPowerOff.onclick = function (event) {
+                websocket.send(JSON.stringify({action: 'btnPowerOff'}));
+            }
+			btnElectricityPlus.onclick = function (event) {
+                websocket.send(JSON.stringify({action: 'btnElectricityPlus'}));
+            }
+            btnElectricityMinus.onclick = function (event) {
+                websocket.send(JSON.stringify({action: 'btnElectricityMinus'}));
+            }
+			btnRandMinPlus.onclick = function (event) {
+                websocket.send(JSON.stringify({action: 'btnRandMinPlus'}));
+            }
+            btnRandMinMinus.onclick = function (event) {
+                websocket.send(JSON.stringify({action: 'btnRandMinMinus'}));
+            }
+			btnRandMaxPlus.onclick = function (event) {
+                websocket.send(JSON.stringify({action: 'btnRandMaxPlus'}));
+            }
+            btnRandMaxMinus.onclick = function (event) {
+                websocket.send(JSON.stringify({action: 'btnRandMaxMinus'}));
+            }
+			selectMode.onclick = function (event) {
+                websocket.send(JSON.stringify({action: 'selectMode', value: selectMode.value}));
+            }
+			btnMode.onclick = function (event) {
+                websocket.send(JSON.stringify({action: 'btnMode'}));
+            }
+            websocket.onmessage = function (event) {
+                data = JSON.parse(event.data);
+                switch (data.type) {
+					case 'power':
+					    if (data.value == true) {
+							labPower1.textContent = "ON";
+							labPower2.textContent = "ON";
+						} else {
+							labPower1.textContent = "OFF";
+							labPower2.textContent = "OFF";
+						}
+                        break;
+                    case 'level':
+						labElectricity1.textContent = data.value;
+						labElectricity2.textContent = data.value;
+                        break;
+					case 'levelRandMin':
+						labRandMin.textContent = data.value;
+                        break;
+					case 'levelRandMax':
+						labRandMax.textContent = data.value;
+                        break;
+					case 'mode':
+						if (data.value == 8) {
+							labMode.textContent = "Random";
+						} else {
+						    labMode.textContent = data.value;
+						}
+                        break;
+                    case 'users':
+                        users.textContent = (
+                            data.count.toString() + " user" +
+                            (data.count == 1 ? "" : "s"));
+                        break;
+                    default:
+                        console.error(
+                            "unsupported event", data);
+                }
+            };
+        </script>
+		
+    </body>
+</html>
