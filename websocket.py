@@ -190,12 +190,12 @@ device = MassageDevice()
 #start = 1
 #stop = 7
 #while start <= stop:
-#    print("Programzyklus: " + str(start) + " von " + str(stop) + ":")
-#    device.programmRandom()
-#    time.sleep(15)
-#    device.off()
-#    time.sleep(5)
-#    start = start + 1
+##    print("Programzyklus: " + str(start) + " von " + str(stop) + ":")
+##    device.programmRandom()
+##    time.sleep(15)
+##    device.off()
+##    time.sleep(5)
+##    start = start + 1
 
 #device.off()
 #exit(0)
