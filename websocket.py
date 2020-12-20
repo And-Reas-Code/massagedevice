@@ -326,6 +326,7 @@ async def counter(websocket, path):
             elif data["action"] == "btnMode":
                 device.bt_mode()
                 await notify_mode()
+                await notify_level()
 
             elif data["action"] == "selectModeDep":
                 mode = int(data["value"])
