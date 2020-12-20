@@ -235,7 +235,6 @@
 				btnRandMaxMinus = document.querySelector('.btnRandMaxMinus'),
 				labRandMax = document.querySelector('.labRandMax'),
 				selectMode = document.querySelector('.selectMode'),
-				btnMode = document.querySelector('.btnMode'),
 				labMode = document.querySelector('.labMode'),
                 users = document.querySelector('.users'),
                 websocket = new WebSocket("ws://192.168.1.133:6789/");
@@ -266,9 +265,6 @@
             }
 			selectMode.onclick = function (event) {
                 websocket.send(JSON.stringify({action: 'selectMode', value: selectMode.value}));
-            }
-			btnMode.onclick = function (event) {
-                websocket.send(JSON.stringify({action: 'btnMode'}));
             }
             websocket.onmessage = function (event) {
                 data = JSON.parse(event.data);
