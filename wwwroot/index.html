@@ -113,11 +113,11 @@
 		</div>
 		
         <div class="w3-container w3-third">
-			<h2>Select the Mode</h2>
+			<h2>The Mode types</h2>
 			<div class="w3-container">
-				<p>Determine the type of current:</p>
+				<p>The type of electricity:</p>
 				
-				<select class="select-css selectMode" value="3">
+				<!--<select class="select-css selectMode">
 					<option value="1">Mode 1</option>
 					<option value="2">Mode 2</option>
 					<option value="3">Mode 3</option>
@@ -126,7 +126,7 @@
 					<option value="6">Mode 6</option>
 					<option value="7">Mode 7</option>
 					<option value="8">Random</option>
-				</select>
+				</select>-->
 
 				<div class="picture">
 					<label>Mode 1:</label>
@@ -161,6 +161,16 @@
 				</div>
 				<div class="w3-container w3-third">
 					<button class="button btnPowerOff">OFF</button>
+				</div>
+			</div>
+			<p>Determine the mode of electricity:</p>
+			<div class="w3-container">
+				<div class="w3-container w3-third">
+					<button class="button btnMode">Mode</button>
+				</div>
+				<div class="w3-container w3-third">
+					<label>MODE</label>
+					<div class="labMode1">?</div>
 				</div>
 			</div>
 			<p>Determine the level of electricity:</p>
@@ -212,7 +222,7 @@
 			</div>
 			<h3>Mode</h3>
 			<div class="w3-container">
-				<div class="labMode">?</div>
+				<div class="labMode2">?</div>
 			</div>
 			<h3>Level</h3>
 			<div class="w3-container">
@@ -239,8 +249,9 @@
 				btnRandMaxPlus = document.querySelector('.btnRandMaxPlus'),
 				btnRandMaxMinus = document.querySelector('.btnRandMaxMinus'),
 				labRandMax = document.querySelector('.labRandMax'),
-				selectMode = document.querySelector('.selectMode'),
-				labMode = document.querySelector('.labMode'),
+				btnMode = document.querySelector('.btnMode'),
+				labMode1 = document.querySelector('.labMode1'),
+				labMode2 = document.querySelector('.labMode2'),
                 users = document.querySelector('.users'),
                 websocket = new WebSocket("ws://192.168.1.133:6789/");
 
@@ -267,10 +278,13 @@
             }
             btnRandMaxMinus.onclick = function (event) {
                 websocket.send(JSON.stringify({action: 'btnRandMaxMinus'}));
+			}
+			btnMode.onclick = function (event) {
+                websocket.send(JSON.stringify({action: 'btnMode'}));
             }
-			selectMode.onclick = function (event) {
-                websocket.send(JSON.stringify({action: 'selectMode', value: selectMode.value}));
-            }
+			//selectMode.onclick = function (event) {
+            //    websocket.send(JSON.stringify({action: 'selectMode', value: selectMode.value}));
+            //}
             websocket.onmessage = function (event) {
                 data = JSON.parse(event.data);
                 switch (data.type) {
@@ -295,9 +309,11 @@
                         break;
 					case 'mode':
 						if (data.value == 8) {
-							labMode.textContent = "Random";
+							labMode1.textContent = "Random";
+							labMode2.textContent = "Random";
 						} else {
-						    labMode.textContent = data.value;
+							labMode1.textContent = data.value;
+							labMode2.textContent = data.value;
 						}
                         break;
                     case 'users':
