@@ -156,7 +156,7 @@
 			<h3>Power</h3>
 			<div class="w3-container">
 				<div class="w3-container w3-third">
-					<button class="button btnPowerOn" disabled>START</button>
+					<button class="button btnPowerOn">START</button>
 				</div>
 				<div class="w3-container w3-third">
 					<label>STATUS</label>
@@ -295,9 +295,11 @@
 					    if (data.value == true) {
 							labPower1.textContent = "ON";
 							labPower2.textContent = "ON";
+							btnMode.disabled = true; 
 						} else {
 							labPower1.textContent = "OFF";
 							labPower2.textContent = "OFF";
+							btnMode.disabled = false;
 						}
                         break;
                     case 'level':
