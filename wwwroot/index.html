@@ -295,11 +295,15 @@
 					    if (data.value == true) {
 							labPower1.textContent = "ON";
 							labPower2.textContent = "ON";
-							btnMode.disabled = true; 
+							btnMode.disabled = true;
+							btnPowerOn.disabled = true;
+							btnPowerOff.disabled = false;
 						} else {
 							labPower1.textContent = "OFF";
 							labPower2.textContent = "OFF";
 							btnMode.disabled = false;
+							btnPowerOn.disabled = false;
+							btnPowerOff.disabled = true;
 						}
                         break;
                     case 'level':
