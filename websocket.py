@@ -274,10 +274,10 @@ async def register(websocket):
     USERS.add(websocket)
     await notify_users()
     await notify_power()
+    await notify_mode()
     await notify_level()
     await notify_randMin()
     await notify_randMax()
-    await notify_mode()
 
 
 async def unregister(websocket):
