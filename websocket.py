@@ -204,6 +204,8 @@ logging.basicConfig()
 
 STATE ={"value": 0}
 
+MODE = 1
+
 USERS = set()
 
 def state_event():
@@ -225,6 +227,7 @@ def randMax_event():
     return json.dumps({"type": "levelRandMax", "value": device.get_max_level()})
 
 def mode_event():
+
     return json.dumps({"type": "mode", "value": device.get_mode()})
 
 
@@ -323,20 +326,20 @@ async def counter(websocket, path):
                 device.set_max_level(device.get_max_level() + 1)
                 await notify_randMax()
 
-            elif data["action"] == "btnMode":
+            elif data["action"] == "btnModeDep":
                 device.bt_mode()
                 await notify_mode()
                 await notify_level()
 
-            elif data["action"] == "selectModeDep":
+            elif data["action"] == "selectMode":
                 mode = int(data["value"])
                 print("MODE: " + str(mode))
                 if not mode == 8:
-                    device.set_mode2(mode)
+                    #device.set_mode(mode)
                 else:
                     print("Random ...")
-                await notify_level()
-                await notify_power()
+                #await notify_level()
+                #await notify_power()
                 await notify_mode()
             else:
                 logging.error("unsupported event: {}", data)
