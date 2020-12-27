@@ -167,13 +167,13 @@ class MassageDevice:
  #       self.set_mode(rand_mode)
  #       self.set_level(rand_level)
 
-class MassageDeviceStatus:
+class MassageDeviceControl:
 
     def __init__(self):
         self.mode = 1
 
     def set_mode(self):
-        if self.mode <= 8:
+        if self.mode < 8:
             self.mode = self.mode + 1
         else:
             self.mode = self.mode = 1
@@ -182,7 +182,7 @@ class MassageDeviceStatus:
     def get_mode(self):
         return self.mode
 
-deviceStatus = MassageDeviceStatus()
+deviceControl = MassageDeviceControl()
 device = MassageDevice()
 
 #device.set_max_level(3)
@@ -229,7 +229,7 @@ def randMax_event():
     return json.dumps({"type": "levelRandMax", "value": device.get_max_level()})
 
 def mode_event():
-    return json.dumps({"type": "mode", "value": deviceStatus.get_mode()})
+    return json.dumps({"type": "mode", "value": deviceControl.get_mode()})
 
 def live_mode_event():
     return json.dumps({"type": "live-mode", "value": device.get_mode()})
