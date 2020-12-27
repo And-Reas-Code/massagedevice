@@ -343,7 +343,7 @@ async def counter(websocket, path):
                 await notify_level()
 
             elif data["action"] == "btnMode":
-                deviceStatus.set_mode()
+                deviceControl.set_mode()
                 await notify_mode()
                 await notify_live_mode()
 
