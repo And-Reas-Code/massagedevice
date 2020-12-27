@@ -167,6 +167,22 @@ class MassageDevice:
  #       self.set_mode(rand_mode)
  #       self.set_level(rand_level)
 
+class MassageDeviceStatus:
+
+    def __init__(self):
+        self.mode = 1
+
+    def set_mode(self):
+        if self.mode <= 8:
+            self.mode = self.mode + 1
+        else:
+            self.mode = self.mode = 1
+        return self.mode
+
+    def get_mode(self):
+        return self.mode
+
+deviceStatus = MassageDeviceStatus()
 device = MassageDevice()
 
 #device.set_max_level(3)
@@ -192,8 +208,6 @@ logging.basicConfig()
 
 STATE ={"value": 0}
 
-MODE = 1
-
 USERS = set()
 
 def state_event():
@@ -215,7 +229,7 @@ def randMax_event():
     return json.dumps({"type": "levelRandMax", "value": device.get_max_level()})
 
 def mode_event():
-    return json.dumps({"type": "mode", "value": MODE})
+    return json.dumps({"type": "mode", "value": deviceStatus.get_mode()})
 
 def live_mode_event():
     return json.dumps({"type": "live-mode", "value": device.get_mode()})
@@ -329,7 +343,7 @@ async def counter(websocket, path):
                 await notify_level()
 
             elif data["action"] == "btnMode":
-                MODE = MODE + 1
+                deviceStatus.set_mode()
                 await notify_mode()
                 await notify_live_mode()
 
