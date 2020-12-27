@@ -39,6 +39,7 @@ class MassageDevice:
         self.max_level = 15
         self.min_level = 1
         self.mode = 1
+        self.time = 15
 
     def set_max_level(self,max_level_nr):
         if max_level_nr > 15:
@@ -114,12 +115,16 @@ class MassageDevice:
         time.sleep(.2)
         GPIO.output(pin_button_time,GPIO.LOW)
         time.sleep(.2)
+        self.time = self.time + 5
+        if self.time > 30:
+            self.time = 0
 
     def display_is_on(self):
         if GPIO.input(pin_status)==1:
             return False
         if GPIO.input(pin_status)==0:
             return True
+        return powerOn
 
     def on(self):
         self.bt_lang()
@@ -136,10 +141,17 @@ class MassageDevice:
         self.powerOn = False
         self.electricityLevel = 0
         self.mode = 1
+        self.time = 15
 
     def set_mode(self, mode_nr):
+        self.electricityLevel = 0
         for x in range(mode_nr - 1):
             self.bt_mode()
+
+    def set_mode2(self, mode_nr):
+        self.off()
+        self.on()
+        self.set_mode(mode_nr)
 
     def set_level(self, level_nr):
         if level_nr > self.max_level:
@@ -157,18 +169,18 @@ class MassageDevice:
         self.set_mode(mode)
         self.set_level(level)
 
- #   def programmRandom(self):
- #       # Immer zuerst abstellen, da dann das Device initialisiert ist!
- #       rand_mode = random.randint(1,7)
- #       rand_level = random.randint(self.min_level,self.max_level)
- #       print("Mode: " + str(rand_mode) + "; Level: " + str(rand_level))
- #       self.off()
- #       self.on()
- #       self.set_mode(rand_mode)
- #       self.set_level(rand_level)
+    def programmRandom(self):
+        # Immer zuerst abstellen, da dann das Device initialisiert ist!
+        rand_mode = random.randint(1,7)
+        rand_level = random.randint(self.min_level,self.max_level)
+        print("Mode: " + str(rand_mode) + "; Level: " + str(rand_level))
+        self.off()
+        self.on()
+        self.set_mode(rand_mode)
+        self.set_level(rand_level)
+
 
 device = MassageDevice()
-
 #device.set_max_level(3)
 #device.set_min_level(2)
 
@@ -215,11 +227,8 @@ def randMax_event():
     return json.dumps({"type": "levelRandMax", "value": device.get_max_level()})
 
 def mode_event():
-    return json.dumps({"type": "mode", "value": MODE})
 
-def live_mode_event():
-    return json.dumps({"type": "live-mode", "value": device.get_mode()})
-
+    return json.dumps({"type": "mode", "value": device.get_mode()})
 
 
 async def notify_state():
@@ -263,18 +272,12 @@ async def notify_mode():
         message = mode_event()
         await asyncio.wait([user.send(message) for user in USERS])
 
-async def notify_live_mode():
-    if USERS:  # asyncio.wait doesn't accept an empty list
-        message = live_mode_event()
-        await asyncio.wait([user.send(message) for user in USERS])
-
 
 async def register(websocket):
     USERS.add(websocket)
     await notify_users()
     await notify_power()
     await notify_mode()
-    await notify_live_mode()
     await notify_level()
     await notify_randMin()
     await notify_randMax()
@@ -327,11 +330,6 @@ async def counter(websocket, path):
                 device.bt_mode()
                 await notify_mode()
                 await notify_level()
-
-            elif data["action"] == "btnMode":
-                MODE = MODE + 1
-                await notify_mode()
-                await notify_live_mode()
 
             elif data["action"] == "selectMode":
                 mode = int(data["value"])

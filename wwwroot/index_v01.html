@@ -225,7 +225,7 @@
 			</div>
 			<h3>Mode</h3>
 			<div class="w3-container">
-				<div class="labLiveMode">?</div>
+				<div class="labMode2">?</div>
 			</div>
 			<h3>Level</h3>
 			<div class="w3-container">
@@ -254,7 +254,7 @@
 				labRandMax = document.querySelector('.labRandMax'),
 				btnMode = document.querySelector('.btnMode'),
 				labMode1 = document.querySelector('.labMode1'),
-				labLiveMode = document.querySelector('.labLiveMode'),
+				labMode2 = document.querySelector('.labMode2'),
                 users = document.querySelector('.users'),
                 websocket = new WebSocket("ws://192.168.1.133:6789/");
 
@@ -319,12 +319,11 @@
 					case 'mode':
 						if (data.value == 8) {
 							labMode1.textContent = "Random";
+							labMode2.textContent = "Random";
 						} else {
 							labMode1.textContent = data.value;
+							labMode2.textContent = data.value;
 						}
-						break;
-					case 'live-mode':
-						labLiveMode.textContent = data.value;
                         break;
                     case 'users':
                         users.textContent = (
