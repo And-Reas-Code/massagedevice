@@ -33,42 +33,6 @@ GPIO.setup(pin_status,GPIO.IN,pull_up_down=GPIO.PUD_UP)
 
 class MassageDevice:
 
-    def __init__(self):
-        self.powerOn = False
-        self.electricityLevel = 0
-        self.max_level = 15
-        self.min_level = 1
-        self.mode = 1
-
-    def set_max_level(self,max_level_nr):
-        if max_level_nr > 15:
-            max_level_nr = 15
-        if max_level_nr < self.min_level:
-            max_level_nr = self.min_level
-        self.max_level = max_level_nr
-
-    def set_min_level(self,min_level_nr):
-        if min_level_nr > self.max_level:
-            min_level_nr = self.max_level
-        if min_level_nr < 1:
-            min_level_nr = 1
-        self.min_level = min_level_nr
-
-    def get_power_state(self):
-        return self.powerOn
-
-    def get_level(self):
-        return self.electricityLevel
-
-    def get_mode(self):
-        return self.mode
-
-    def get_max_level(self):
-        return self.max_level
-
-    def get_min_level(self):
-        return self.min_level
-
     def bt_on_off(self):
         GPIO.output(pin_button_on_off,GPIO.HIGH)
         time.sleep(.2)
@@ -86,28 +50,18 @@ class MassageDevice:
         time.sleep(.2)
         GPIO.output(pin_button_increase,GPIO.LOW)
         time.sleep(.2)
-        self.electricityLevel = self.electricityLevel + 1
-        if self.electricityLevel > 15:
-            self.electricityLevel = 15
 
     def bt_decrease(self):
         GPIO.output(pin_button_decrease,GPIO.HIGH)
         time.sleep(.2)
         GPIO.output(pin_button_decrease,GPIO.LOW)
         time.sleep(.2)
-        self.electricityLevel = self.electricityLevel - 1
-        if self.electricityLevel < 0:
-            self.electricityLevel = 0
 
     def bt_mode(self):
         GPIO.output(pin_button_mode,GPIO.HIGH)
         time.sleep(.2)
         GPIO.output(pin_button_mode,GPIO.LOW)
         time.sleep(.2)
-        self.mode = self.mode + 1
-        if self.mode > 7:
-            self.mode = 1
-        self.electricityLevel = 0
 
     def bt_time(self):
         GPIO.output(pin_button_time,GPIO.HIGH)
@@ -127,25 +81,21 @@ class MassageDevice:
             self.bt_on_off()
             for x in range(3):
                 self.bt_time()
-        self.powerOn = True
 
     def off(self):
         self.bt_lang()
         if self.display_is_on():
             self.bt_on_off()
-        self.powerOn = False
-        self.electricityLevel = 0
-        self.mode = 1
 
     def set_mode(self, mode_nr):
         for x in range(mode_nr - 1):
             self.bt_mode()
 
     def set_level(self, level_nr):
-        if level_nr > self.max_level:
-            level_nr = self.max_level
-        if level_nr < self.min_level:
-            level_nr = self.min_level
+        if level_nr >= 15:
+            level_nr = 15
+        if level_nr < 0:
+            level_nr = 0
         for x in range(level_nr):
             self.bt_increase()
             time.sleep(.3)
@@ -157,21 +107,32 @@ class MassageDevice:
         self.set_mode(mode)
         self.set_level(level)
 
- #   def programmRandom(self):
- #       # Immer zuerst abstellen, da dann das Device initialisiert ist!
- #       rand_mode = random.randint(1,7)
- #       rand_level = random.randint(self.min_level,self.max_level)
- #       print("Mode: " + str(rand_mode) + "; Level: " + str(rand_level))
- #       self.off()
- #       self.on()
- #       self.set_mode(rand_mode)
- #       self.set_level(rand_level)
+#   def programmRandom(self):
+#       # Immer zuerst abstellen, da dann das Device initialisiert ist!
+#       rand_mode = random.randint(1,7)
+#       rand_level = random.randint(self.min_level,self.max_level)
+#       print("Mode: " + str(rand_mode) + "; Level: " + str(rand_level))
+#       self.off()
+#       self.on()
+#       self.set_mode(rand_mode)
+#       self.set_level(rand_level)
+ 
+device = MassageDevice()
 
 class MassageDeviceControl:
 
     def __init__(self):
+        self.powerOn = False
         self.mode = 1
+        self.liveMode = 1
         self.electricityLevel = 0
+        self.electricityLiveLevel = 0
+        self.time = 15
+        self.min_level = 1
+        self.max_level = 15
+
+    def get_power_state(self):
+        return self.powerOn
 
     def set_mode(self):
         if self.mode < 8:
@@ -182,6 +143,12 @@ class MassageDeviceControl:
 
     def get_mode(self):
         return self.mode
+
+    def set_live_mode(self,mode):
+        self.liveMode = mode
+
+    def get_live_mode(self):
+        return self.liveMode
 
     def set_level_increase(self):
         self.electricityLevel = self.electricityLevel + 1
@@ -196,8 +163,48 @@ class MassageDeviceControl:
     def get_level(self):
         return self.electricityLevel
 
+    def set_live_level(self,level):
+        self.electricityLiveLevel = level
+
+    def get_live_level(self):
+        return self.electricityLiveLevel
+
+    def set_max_level(self,max_level_nr):
+        if max_level_nr > 15:
+            max_level_nr = 15
+        if max_level_nr < self.min_level:
+            max_level_nr = self.min_level
+        self.max_level = max_level_nr
+
+    def set_min_level(self,min_level_nr):
+        if min_level_nr > self.max_level:
+            min_level_nr = self.max_level
+        if min_level_nr < 1:
+            min_level_nr = 1
+        self.min_level = min_level_nr
+
+    def get_max_level(self):
+        return self.max_level
+
+    def get_min_level(self):
+        return self.min_level
+
+    def start(self):
+        self.powerOn = True
+        self.liveMode = self.mode
+        self.electricityLiveLevel = self.electricityLevel
+        self.time = 30
+
+    def stop(self):
+        self.powerOn = False
+        self.electricityLiveLevel = 0
+        self.liveMode = 1
+        
+
+
+
 deviceControl = MassageDeviceControl()
-device = MassageDevice()
+
 
 #device.set_max_level(3)
 #device.set_min_level(2)
@@ -231,25 +238,25 @@ def users_event():
     return json.dumps({"type": "users", "count": len(USERS)})
 
 def power_event():
-    return json.dumps({"type": "power", "value": device.get_power_state()})
+    return json.dumps({"type": "power", "value": deviceControl.get_power_state()})
 
 def level_event():
     return json.dumps({"type": "level", "value": deviceControl.get_level()})
 
 def live_level_event():
-    return json.dumps({"type": "live-level", "value": device.get_level()})
+    return json.dumps({"type": "live-level", "value": deviceControl.get_live_level()})
 
 def randMin_event():
-    return json.dumps({"type": "levelRandMin", "value": device.get_min_level()})
+    return json.dumps({"type": "levelRandMin", "value": deviceControl.get_min_level()})
 
 def randMax_event():
-    return json.dumps({"type": "levelRandMax", "value": device.get_max_level()})
+    return json.dumps({"type": "levelRandMax", "value": deviceControl.get_max_level()})
 
 def mode_event():
     return json.dumps({"type": "mode", "value": deviceControl.get_mode()})
 
 def live_mode_event():
-    return json.dumps({"type": "live-mode", "value": device.get_mode()})
+    return json.dumps({"type": "live-mode", "value": deviceControl.get_live_mode()})
 
 
 
@@ -332,42 +339,42 @@ async def counter(websocket, path):
             data = json.loads(message)
 
             if data["action"] == "btnPowerOn":
-                device.on()
+                deviceControl.start()
                 device.programm(deviceControl.get_mode(),deviceControl.get_level())
                 await notify_live_level()
                 await notify_live_mode()
                 await notify_power()
             elif data["action"] == "btnPowerOff":
-                device.off()
+                deviceControl.stop()
                 await notify_live_level()
                 await notify_live_mode()
                 await notify_power()
 
             elif data["action"] == "btnElectricityPlus":
-                if device.get_power_state():
+                if deviceControl.get_power_state():
                     device.bt_increase()
                 deviceControl.set_level_increase()
                 await notify_live_level()
                 await notify_level()
             elif data["action"] == "btnElectricityMinus":
-                if device.get_power_state():
+                if deviceControl.get_power_state():
                     device.bt_decrease()
                 deviceControl.set_level_decrease()
                 await notify_live_level()
                 await notify_level()
 
             elif data["action"] == "btnRandMinMinus":
-                device.set_min_level(device.get_min_level() - 1)
+                deviceControl.set_min_level(deviceControl.get_min_level() - 1)
                 await notify_randMin()
             elif data["action"] == "btnRandMinPlus":
-                device.set_min_level(device.get_min_level() + 1)
+                deviceControl.set_min_level(deviceControl.get_min_level() + 1)
                 await notify_randMin()
 
             elif data["action"] == "btnRandMaxMinus":
-                device.set_max_level(device.get_max_level() - 1)
+                deviceControl.set_max_level(deviceControl.get_max_level() - 1)
                 await notify_randMax()
             elif data["action"] == "btnRandMaxPlus":
-                device.set_max_level(device.get_max_level() + 1)
+                deviceControl.set_max_level(deviceControl.get_max_level() + 1)
                 await notify_randMax()
 
             elif data["action"] == "btnMode":
