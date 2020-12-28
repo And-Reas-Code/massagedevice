@@ -343,11 +343,13 @@ async def counter(websocket, path):
             elif data["action"] == "btnElectricityPlus":
                 if device.get_power_state():
                     device.bt_increase()
+                deviceControl.set_level_increase()
                 await notify_live_level()
                 await notify_level()
             elif data["action"] == "btnElectricityMinus":
                 if device.get_power_state():
                     device.bt_decrease()
+                deviceControl.set_level_decrease()
                 await notify_live_level()
                 await notify_level()
 
