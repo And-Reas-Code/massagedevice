@@ -171,6 +171,7 @@ class MassageDeviceControl:
 
     def __init__(self):
         self.mode = 1
+        self.electricityLevel = 0
 
     def set_mode(self):
         if self.mode < 8:
@@ -181,6 +182,19 @@ class MassageDeviceControl:
 
     def get_mode(self):
         return self.mode
+
+    def set_level_increase(self):
+        self.electricityLevel = self.electricityLevel + 1
+        if self.electricityLevel > 15:
+            self.electricityLevel = 15
+
+    def set_level_decrease(self):
+        self.electricityLevel = self.electricityLevel - 1
+        if self.electricityLevel < 0:
+            self.electricityLevel = 0
+
+    def get_level(self):
+        return self.electricityLevel
 
 deviceControl = MassageDeviceControl()
 device = MassageDevice()
@@ -220,7 +234,10 @@ def power_event():
     return json.dumps({"type": "power", "value": device.get_power_state()})
 
 def level_event():
-    return json.dumps({"type": "level", "value": device.get_level()})
+    return json.dumps({"type": "level", "value": deviceControl.get_level()})
+
+def live_level_event():
+    return json.dumps({"type": "live-level", "value": device.get_level()})
 
 def randMin_event():
     return json.dumps({"type": "levelRandMin", "value": device.get_min_level()})
@@ -260,6 +277,12 @@ async def notify_level():
         await asyncio.wait([user.send(message) for user in USERS])
 
 
+async def notify_live_level():
+    if USERS:  # asyncio.wait doesn't accept an empty list
+        message = live_level_event()
+        await asyncio.wait([user.send(message) for user in USERS])
+
+
 async def notify_randMin():
     if USERS:  # asyncio.wait doesn't accept an empty list
         message = randMin_event()
@@ -290,6 +313,7 @@ async def register(websocket):
     await notify_mode()
     await notify_live_mode()
     await notify_level()
+    await notify_live_level()
     await notify_randMin()
     await notify_randMax()
 
@@ -317,10 +341,14 @@ async def counter(websocket, path):
                 await notify_power()
 
             elif data["action"] == "btnElectricityPlus":
-                device.bt_increase()
+                if device.get_power_state():
+                    device.bt_increase()
+                await notify_live_level()
                 await notify_level()
             elif data["action"] == "btnElectricityMinus":
-                device.bt_decrease()
+                if device.get_power_state():
+                    device.bt_decrease()
+                await notify_live_level()
                 await notify_level()
 
             elif data["action"] == "btnRandMinMinus":
@@ -337,27 +365,10 @@ async def counter(websocket, path):
                 device.set_max_level(device.get_max_level() + 1)
                 await notify_randMax()
 
-            elif data["action"] == "btnModeDep":
-                device.bt_mode()
-                await notify_mode()
-                await notify_level()
-
             elif data["action"] == "btnMode":
                 deviceControl.set_mode()
                 await notify_mode()
                 await notify_live_mode()
-
-            elif data["action"] == "selectMode":
-                mode = int(data["value"])
-                print("MODE: " + str(mode))
-                if not mode == 8:
-                    #device.set_mode(mode)
-                    print("MODE ...")
-                else:
-                    print("Random ...")
-                #await notify_level()
-                #await notify_power()
-                await notify_mode()
             else:
                 logging.error("unsupported event: {}", data)
     finally:

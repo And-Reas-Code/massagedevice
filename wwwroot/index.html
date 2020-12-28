@@ -173,7 +173,7 @@
 				</div>
 				<div class="w3-container w3-third">
 					<label>MODE</label>
-					<div class="labMode1">?</div>
+					<div class="labMode">?</div>
 				</div>
 			</div>
 			<p>Determine the level of electricity:</p>
@@ -183,7 +183,7 @@
 				</div>
 				<div class="w3-container w3-third">
 					<label>LEVEL</label>
-					<div class="labElectricity1">?</div>
+					<div class="labElectricity">?</div>
 				</div>
 				<div class="w3-container w3-third">
 					<div class="button btnElectricityMinus">-</div>
@@ -229,7 +229,7 @@
 			</div>
 			<h3>Level</h3>
 			<div class="w3-container">
-				<div class="labElectricity2">?</div>
+				<div class="labLiveElectricity">?</div>
 			</div>
 			<h3>User</h3>
 			<div class="w3-container">
@@ -244,8 +244,8 @@
 				labPower2 = document.querySelector('.labPower2'),
 				btnElectricityMinus = document.querySelector('.btnElectricityMinus'),
 				btnElectricityPlus = document.querySelector('.btnElectricityPlus'),
-				labElectricity1 = document.querySelector('.labElectricity1'),
-				labElectricity2 = document.querySelector('.labElectricity2'),
+				labElectricity = document.querySelector('.labElectricity'),
+				labLiveElectricity = document.querySelector('.labLiveElectricity'),
 				btnRandMinPlus = document.querySelector('.btnRandMinPlus'),
 				btnRandMinMinus = document.querySelector('.btnRandMinMinus'),
 				labRandMin = document.querySelector('.labRandMin'),
@@ -253,7 +253,7 @@
 				btnRandMaxMinus = document.querySelector('.btnRandMaxMinus'),
 				labRandMax = document.querySelector('.labRandMax'),
 				btnMode = document.querySelector('.btnMode'),
-				labMode1 = document.querySelector('.labMode1'),
+				labMode = document.querySelector('.labMode'),
 				labLiveMode = document.querySelector('.labLiveMode'),
                 users = document.querySelector('.users'),
                 websocket = new WebSocket("ws://192.168.1.133:6789/");
@@ -307,8 +307,10 @@
 						}
                         break;
                     case 'level':
-						labElectricity1.textContent = data.value;
-						labElectricity2.textContent = data.value;
+						labElectricity.textContent = data.value;
+						break;
+					case 'live-level':
+					    labLiveElectricity.textContent = data.value;
                         break;
 					case 'levelRandMin':
 						labRandMin.textContent = data.value;
@@ -318,9 +320,9 @@
                         break;
 					case 'mode':
 						if (data.value == 8) {
-							labMode1.textContent = "Random";
+							labMode.textContent = "Random";
 						} else {
-							labMode1.textContent = data.value;
+							labMode.textContent = data.value;
 						}
 						break;
 					case 'live-mode':
