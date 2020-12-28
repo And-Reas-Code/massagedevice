@@ -340,7 +340,7 @@ async def counter(websocket, path):
 
             if data["action"] == "btnPowerOn":
                 deviceControl.start()
-                device.programm(deviceControl.get_mode(),deviceControl.get_level())
+                #device.programm(deviceControl.get_mode(),deviceControl.get_level())
                 await notify_live_level()
                 await notify_live_mode()
                 await notify_power()
@@ -351,15 +351,17 @@ async def counter(websocket, path):
                 await notify_power()
 
             elif data["action"] == "btnElectricityPlus":
-                if deviceControl.get_power_state():
-                    device.bt_increase()
+                #if deviceControl.get_power_state():
+                    #device.bt_increase()
                 deviceControl.set_level_increase()
+                await notify_live_mode()
                 await notify_live_level()
                 await notify_level()
             elif data["action"] == "btnElectricityMinus":
-                if deviceControl.get_power_state():
-                    device.bt_decrease()
+                #if deviceControl.get_power_state():
+                    #device.bt_decrease()
                 deviceControl.set_level_decrease()
+                await notify_live_mode()
                 await notify_live_level()
                 await notify_level()
 
@@ -380,7 +382,7 @@ async def counter(websocket, path):
             elif data["action"] == "btnMode":
                 deviceControl.set_mode()
                 await notify_mode()
-                await notify_live_mode()
+                #await notify_live_mode()
             else:
                 logging.error("unsupported event: {}", data)
     finally:
