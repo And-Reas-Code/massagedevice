@@ -154,11 +154,15 @@ class MassageDeviceControl:
         self.electricityLevel = self.electricityLevel + 1
         if self.electricityLevel > 15:
             self.electricityLevel = 15
+        if self.powerOn == True:
+            self.set_live_level(self.electricityLevel)
 
     def set_level_decrease(self):
         self.electricityLevel = self.electricityLevel - 1
         if self.electricityLevel < 0:
             self.electricityLevel = 0
+        if self.powerOn == True:
+            self.set_live_level(self.electricityLevel)
 
     def get_level(self):
         return self.electricityLevel
@@ -199,6 +203,8 @@ class MassageDeviceControl:
         self.powerOn = False
         self.electricityLiveLevel = 0
         self.liveMode = 1
+
+    #def programm(self,mode,level):
         
 
 
