@@ -333,11 +333,14 @@ async def counter(websocket, path):
 
             if data["action"] == "btnPowerOn":
                 device.on()
+                device.programm(deviceControl.get_mode(),deviceControl.get_level())
+                await notify_live_level()
+                await notify_live_mode()
                 await notify_power()
             elif data["action"] == "btnPowerOff":
                 device.off()
-                await notify_level()
-                await notify_mode()
+                await notify_live_level()
+                await notify_live_mode()
                 await notify_power()
 
             elif data["action"] == "btnElectricityPlus":
