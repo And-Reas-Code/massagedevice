@@ -203,7 +203,7 @@ class MassageDeviceControl:
         self.liveMode = 1
 
     def startProgramm(self):
-        self.programm(self.mode,self.electricityLiveLevel)
+        self.programm(self.mode,self.electricityLevel)
 
     def programm(self,mode,level):
         print("Mode: " + str(mode) + "; Level: " + str(level))
