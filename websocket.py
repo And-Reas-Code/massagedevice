@@ -124,6 +124,9 @@ class MassageDeviceControl:
         self.max_level = 15
         self.rand_mode = 1
         self.rand_level = 0
+        self.thread = 0
+        self.repetition = 1
+        self.duration = 60
 
     def get_power_state(self):
         return self.powerOn
@@ -194,10 +197,12 @@ class MassageDeviceControl:
     def start(self):
         self.powerOn = True
         if self.mode == 8:
-            self.startProgrammRandom()
-            self.liveMode = self.rand_mode
-            self.electricityLiveLevel = self.rand_level
-            self.electricityLevel = self.electricityLiveLevel
+            self.thread = threading.Thread(target=self.thread_function)
+            self.thread.start()
+            #self.startProgrammRandom()
+            #self.liveMode = self.rand_mode
+            #self.electricityLiveLevel = self.rand_level
+            #self.electricityLevel = self.electricityLiveLevel
         else:
             self.startProgramm()
             self.liveMode = self.mode 
@@ -221,9 +226,13 @@ class MassageDeviceControl:
         self.rand_level = random.randint(self.min_level,self.max_level)
         self.programm(self.rand_mode,self.rand_level)
 
-    #def thread_function():
-    #    print("Start Thread ...")
-    #    time.sleep(60)
+    def thread_function(self):
+        print("Start Thread ...")
+        self.startProgrammRandom()
+        self.liveMode = self.rand_mode
+        self.electricityLiveLevel = self.rand_level
+        self.electricityLevel = self.electricityLiveLevel
+        print("End Thread ...")
 
 deviceControl = MassageDeviceControl()
 
