@@ -122,8 +122,7 @@ class ProgrammTask:
     def run(self):
         print("Start Thread ...")
         i = 1 
-        while self._running and i <= self.deviceControl.repetition: 
-            time.sleep(5) # ??? schlecht ...
+        while self._running and i <= self.deviceControl.repetition:
             self.deviceControl.startProgrammRandom()
             self.deviceControl.liveMode = self.deviceControl.rand_mode
             self.deviceControl.electricityLiveLevel = self.deviceControl.rand_level
@@ -131,6 +130,7 @@ class ProgrammTask:
             time.sleep(self.deviceControl.duration)
             device.off()
             i += 1
+            time.sleep(5) # ??? schlecht ...
         print("End Thread ...")
 
 class MassageDeviceControl:
@@ -258,19 +258,19 @@ class MassageDeviceControl:
         self.rand_level = random.randint(self.min_level,self.max_level)
         self.programm(self.rand_mode,self.rand_level)
 
-    def thread_function(self):
-        print("Start Thread ...")
-        i = 1
-        while i <= self.repetition:
-            time.sleep(5) # ??? schlecht ...
-            self.startProgrammRandom()
-            self.liveMode = self.rand_mode
-            self.electricityLiveLevel = self.rand_level
-            self.electricityLevel = self.electricityLiveLevel
-            time.sleep(self.duration)
-            device.off()
-            i += 1
-        print("End Thread ...")
+#    def thread_function(self):
+#        print("Start Thread ...")
+#        i = 1
+#        while i <= self.repetition:
+#            self.startProgrammRandom()
+#            self.liveMode = self.rand_mode
+#            self.electricityLiveLevel = self.rand_level
+#            self.electricityLevel = self.electricityLiveLevel
+#            time.sleep(self.duration)
+#            device.off()
+#            time.sleep(5) # ??? schlecht ...
+#            i += 1
+#        print("End Thread ...")
 
 deviceControl = MassageDeviceControl()
 
