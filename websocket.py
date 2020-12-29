@@ -107,16 +107,6 @@ class MassageDevice:
         self.set_mode(mode)
         self.set_level(level)
 
-#   def programmRandom(self):
-#       # Immer zuerst abstellen, da dann das Device initialisiert ist!
-#       rand_mode = random.randint(1,7)
-#       rand_level = random.randint(self.min_level,self.max_level)
-#       print("Mode: " + str(rand_mode) + "; Level: " + str(rand_level))
-#       self.off()
-#       self.on()
-#       self.set_mode(rand_mode)
-#       self.set_level(rand_level)
- 
 device = MassageDevice()
 
 class MassageDeviceControl:
@@ -366,6 +356,7 @@ async def counter(websocket, path):
                 #device.programm(deviceControl.get_mode(),deviceControl.get_level())
                 await notify_live_level()
                 await notify_live_mode()
+                await notify_level()
                 await notify_power()
             elif data["action"] == "btnPowerOff":
                 deviceControl.stop()
