@@ -111,6 +111,28 @@ class MassageDevice:
 
 device = MassageDevice()
 
+class ProgrammTask:
+    def __init__(self, deviceControl):
+        self._running = True
+        self.deviceControl = deviceControl
+
+    def terminate(self): 
+        self._running = False
+      
+    def run(self):
+        print("Start Thread ...")
+        i = 1 
+        while self._running and i <= self.deviceControl.repetition: 
+            time.sleep(5) # ??? schlecht ...
+            self.deviceControl.startProgrammRandom()
+            self.deviceControl.liveMode = self.deviceControl.rand_mode
+            self.deviceControl.electricityLiveLevel = self.deviceControl.rand_level
+            self.deviceControl.electricityLevel = self.deviceControl.electricityLiveLevel
+            time.sleep(self.deviceControl.duration)
+            device.off()
+            i += 1
+        print("End Thread ...")
+
 class MassageDeviceControl:
 
     def __init__(self):
@@ -124,7 +146,8 @@ class MassageDeviceControl:
         self.max_level = 15
         self.rand_mode = 1
         self.rand_level = 0
-        self.thread = 0
+        self.programTask = 0
+        self.thread = 0 
         self.repetition = 4 #1
         self.duration = 10 #60
 
@@ -197,7 +220,9 @@ class MassageDeviceControl:
     def start(self):
         self.powerOn = True
         if self.mode == 8:
-            self.thread = threading.Thread(target=self.thread_function)
+            #self.thread = threading.Thread(target=self.thread_function)
+            self.programTask = ProgrammTask(self)
+            self.thread = threading.Thread(target=self.programTask.run)
             self.thread.start()
             #self.startProgrammRandom()
             #self.liveMode = self.rand_mode
@@ -209,10 +234,14 @@ class MassageDeviceControl:
             self.electricityLiveLevel = self.electricityLevel
 
     def stop(self):
-        device.off() ##########
-        self.powerOn = False
-        self.electricityLiveLevel = 0
-        self.liveMode = 1
+        if self.mode == 8:
+            self.programTask.terminate()
+            device.off() ##########
+        else:
+            device.off() ##########
+            self.powerOn = False
+            self.electricityLiveLevel = 0
+            self.liveMode = 1
 
     def startProgramm(self):
         self.programm(self.mode,self.electricityLevel)
