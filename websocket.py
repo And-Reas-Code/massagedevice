@@ -143,6 +143,8 @@ class MassageDeviceControl:
         return self.liveMode
 
     def set_level_increase(self):
+        if self.powerOn == True:
+            device.bt_increase() ##########
         self.electricityLevel = self.electricityLevel + 1
         if self.electricityLevel > 15:
             self.electricityLevel = 15
@@ -150,6 +152,8 @@ class MassageDeviceControl:
             self.set_live_level(self.electricityLevel)
 
     def set_level_decrease(self):
+        if self.powerOn == True:
+            device.bt_decrease() ##########
         self.electricityLevel = self.electricityLevel - 1
         if self.electricityLevel < 0:
             self.electricityLevel = 0
@@ -198,6 +202,7 @@ class MassageDeviceControl:
             self.electricityLiveLevel = self.electricityLevel
 
     def stop(self):
+        device.off() ##########
         self.powerOn = False
         self.electricityLiveLevel = 0
         self.liveMode = 1
@@ -207,26 +212,17 @@ class MassageDeviceControl:
 
     def programm(self,mode,level):
         print("Mode: " + str(mode) + "; Level: " + str(level))
+        device.programm(mode,level) ##########
 
     def startProgrammRandom(self):
-        # Immer zuerst abstellen, da dann das Device initialisiert ist!
         self.rand_mode = random.randint(1,7)
         self.rand_level = random.randint(self.min_level,self.max_level)
         self.programm(self.rand_mode,self.rand_level)
 
 
-
 deviceControl = MassageDeviceControl()
 
 
-#device.set_max_level(3)
-#device.set_min_level(2)
-
-#device.programm(2,4)
-#exit(0)
-
-#start = 1
-#stop = 7
 #while start <= stop:
 ##    print("Programzyklus: " + str(start) + " von " + str(stop) + ":")
 ##    device.programmRandom()
@@ -234,9 +230,6 @@ deviceControl = MassageDeviceControl()
 ##    device.off()
 ##    time.sleep(5)
 ##    start = start + 1
-
-#device.off()
-#exit(0)
 
 logging.basicConfig()
 
@@ -353,7 +346,6 @@ async def counter(websocket, path):
 
             if data["action"] == "btnPowerOn":
                 deviceControl.start()
-                #device.programm(deviceControl.get_mode(),deviceControl.get_level())
                 await notify_live_level()
                 await notify_live_mode()
                 await notify_level()
@@ -396,7 +388,6 @@ async def counter(websocket, path):
             elif data["action"] == "btnMode":
                 deviceControl.set_mode()
                 await notify_mode()
-                #await notify_live_mode()
             else:
                 logging.error("unsupported event: {}", data)
     finally:
