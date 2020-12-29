@@ -237,6 +237,9 @@ class MassageDeviceControl:
         if self.mode == 8:
             self.programTask.terminate()
             device.off() ##########
+            self.powerOn = False
+            self.electricityLiveLevel = 0
+            self.liveMode = 1
         else:
             device.off() ##########
             self.powerOn = False
