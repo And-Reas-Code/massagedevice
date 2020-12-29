@@ -125,6 +125,7 @@ class MassageDeviceControl:
         self.rand_mode = 1
         self.rand_level = 0
         self.thread = 0
+        self.repetition = 1
         self.duration = 60
 
     def get_power_state(self):
@@ -210,7 +211,10 @@ class MassageDeviceControl:
 
     def stop(self):
         #device.off() ##########
-        self.thread.join()
+        try:
+            self.thread.join()
+        except (Exception):
+            print("Fehler aufgetreten ...")
         self.powerOn = False
         self.electricityLiveLevel = 0
         self.liveMode = 1
