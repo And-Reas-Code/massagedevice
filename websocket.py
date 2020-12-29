@@ -130,6 +130,8 @@ class MassageDeviceControl:
         self.time = 15
         self.min_level = 1
         self.max_level = 15
+        self.rand_mode = 1
+        self.rand_level = 0
 
     def get_power_state(self):
         return self.powerOn
@@ -195,17 +197,32 @@ class MassageDeviceControl:
 
     def start(self):
         self.powerOn = True
-        self.liveMode = self.mode
-        self.electricityLiveLevel = self.electricityLevel
-        self.time = 30
+        if self.mode == 8:
+            self.startProgrammRandom()
+            self.liveMode = self.rand_mode
+            self.electricityLiveLevel = self.rand_level
+            self.electricityLevel = self.electricityLiveLevel
+        else:
+            self.startProgramm()
+            self.liveMode = self.mode 
+            self.electricityLiveLevel = self.electricityLevel
 
     def stop(self):
         self.powerOn = False
         self.electricityLiveLevel = 0
         self.liveMode = 1
 
-    #def programm(self,mode,level):
-        
+    def startProgramm(self):
+        self.programm(self.mode,self.electricityLiveLevel)
+
+    def programm(self,mode,level):
+        print("Mode: " + str(mode) + "; Level: " + str(level))
+
+    def startProgrammRandom(self):
+        # Immer zuerst abstellen, da dann das Device initialisiert ist!
+        self.rand_mode = random.randint(1,7)
+        self.rand_level = random.randint(self.min_level,self.max_level)
+        self.programm(self.rand_mode,self.rand_level)
 
 
 
