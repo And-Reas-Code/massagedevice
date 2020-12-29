@@ -130,7 +130,7 @@ class ProgrammTask:
             time.sleep(self.deviceControl.duration)
             device.off()
             i += 1
-            time.sleep(5) # ??? schlecht ...
+            time.sleep(self.deviceControl.pause) # ??? schlecht ...
         print("End Thread ...")
 
 class MassageDeviceControl:
@@ -150,6 +150,7 @@ class MassageDeviceControl:
         self.thread = 0 
         self.repetition = 4 #1
         self.duration = 10 #60
+        self.pause = 10
 
     def get_power_state(self):
         return self.powerOn
