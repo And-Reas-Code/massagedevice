@@ -219,30 +219,30 @@ class MassageDeviceControl:
         return self.min_level
 
     def set_repetition_increase(self):
-        self.electricityLevel = self.electricityLevel + 1
-        if self.electricityLevel > 20:
-            self.electricityLevel = 20
+        self.repetition = self.repetition + 1
+        if self.repetition > 20:
+            self.repetition = 20
 
     def set_repetition_decrease(self):
-        self.electricityLevel = self.electricityLevel - 1
-        if self.electricityLevel < 1:
-            self.electricityLevel = 1
+        self.repetition = self.repetition - 1
+        if self.repetition < 1:
+            self.repetition = 1
 
     def get_repetition(self):
         return self.repetition
 
     def set_duration_increase(self):
-        self.electricityLevel = self.electricityLevel + 1
-        if self.electricityLevel > 120:
-            self.electricityLevel = 120
+        self.duration = self.duration + 1
+        if self.duration > 120:
+            self.duration = 120
 
     def set_duration_decrease(self):
-        self.electricityLevel = self.electricityLevel - 1
-        if self.electricityLevel < 10:
-            self.electricityLevel = 10
+        self.duration = self.duration - 1
+        if self.duration < 10:
+            self.duration = 10
 
     def get_duration(self):
-        return self.repetition
+        return self.duration
 
     def start(self):
         self.powerOn = True
@@ -415,6 +415,8 @@ async def register(websocket):
     await notify_live_level()
     await notify_randMin()
     await notify_randMax()
+    await notify_repetition()
+    await notify_duration()
 
 
 async def unregister(websocket):
