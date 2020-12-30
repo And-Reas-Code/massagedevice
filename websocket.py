@@ -128,7 +128,7 @@ class ProgrammTask:
             self.deviceControl.electricityLiveLevel = self.deviceControl.rand_level
             self.deviceControl.electricityLevel = self.deviceControl.electricityLiveLevel
             time.sleep(self.deviceControl.duration)
-            device.off()
+            device.off() ##########
             i += 1
             time.sleep(self.deviceControl.pause) # ??? schlecht ...
         print("End Thread ...")
