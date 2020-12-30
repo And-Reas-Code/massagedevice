@@ -148,8 +148,8 @@ class MassageDeviceControl:
         self.rand_level = 0
         self.programTask = 0
         self.thread = 0 
-        self.repetition = 1
-        self.duration = 10
+        self.repetition = 4 #1
+        self.duration = 10 #60
         self.pause = 10
 
     def get_power_state(self):
@@ -217,32 +217,6 @@ class MassageDeviceControl:
 
     def get_min_level(self):
         return self.min_level
-
-    def set_repetition_increase(self):
-        self.electricityLevel = self.electricityLevel + 1
-        if self.electricityLevel > 20:
-            self.electricityLevel = 20
-
-    def set_repetition_decrease(self):
-        self.electricityLevel = self.electricityLevel - 1
-        if self.electricityLevel < 1:
-            self.electricityLevel = 1
-
-    def get_repetition(self):
-        return self.repetition
-
-    def set_duration_increase(self):
-        self.electricityLevel = self.electricityLevel + 1
-        if self.electricityLevel > 120:
-            self.electricityLevel = 120
-
-    def set_duration_decrease(self):
-        self.electricityLevel = self.electricityLevel - 1
-        if self.electricityLevel < 10:
-            self.electricityLevel = 10
-
-    def get_duration(self):
-        return self.repetition
 
     def start(self):
         self.powerOn = True
@@ -334,12 +308,6 @@ def mode_event():
 def live_mode_event():
     return json.dumps({"type": "live-mode", "value": deviceControl.get_live_mode()})
 
-def repetition_event():
-    return json.dumps({"type": "labRepetition", "value": deviceControl.get_repetition()})
-
-def duration_event():
-    return json.dumps({"type": "labRepDur", "value": deviceControl.get_duration()})
-
 
 
 async def notify_state():
@@ -392,16 +360,6 @@ async def notify_mode():
 async def notify_live_mode():
     if USERS:  # asyncio.wait doesn't accept an empty list
         message = live_mode_event()
-        await asyncio.wait([user.send(message) for user in USERS])
-
-async def notify_repetition():
-    if USERS:  # asyncio.wait doesn't accept an empty list
-        message = repetition_event()
-        await asyncio.wait([user.send(message) for user in USERS])
-
-async def notify_duration():
-    if USERS:  # asyncio.wait doesn't accept an empty list
-        message = duration_event()
         await asyncio.wait([user.send(message) for user in USERS])
 
 
@@ -470,20 +428,6 @@ async def counter(websocket, path):
             elif data["action"] == "btnMode":
                 deviceControl.set_mode()
                 await notify_mode()
-            
-            elif data["action"] == "btnRepetitionPlus":
-                deviceControl.set_repetition_increase()
-                await repetition_event()
-            elif data["action"] == "btnRepetitionMinus":
-                deviceControl.set_repetition_decrease()
-                await repetition_event()
-            elif data["action"] == "btnRepDurPlus":
-                deviceControl.set_duration_increase()
-                await notify_duration()
-            elif data["action"] == "btnRepDurMinus":
-                deviceControl.set_duration_decrease()
-                await notify_duration()
-
             else:
                 logging.error("unsupported event: {}", data)
     finally:

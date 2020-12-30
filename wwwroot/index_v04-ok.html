@@ -281,12 +281,6 @@
 				btnMode = document.querySelector('.btnMode'),
 				labMode = document.querySelector('.labMode'),
 				labLiveMode = document.querySelector('.labLiveMode'),
-				btnRepetitionPlus = document.querySelector('.btnRepetitionPlus'),
-				btnRepetitionMinus = document.querySelector('.btnRepetitionMinus'),
-				labRepetition = document.querySelector('.labRepetition'),
-				btnRepDurPlus = document.querySelector('.btnRepDurPlus'),
-				btnRepDurMinus = document.querySelector('.btnRepDurMinus'),
-				labRepDur = document.querySelector('.labRepDur'),
                 users = document.querySelector('.users'),
                 websocket = new WebSocket("ws://192.168.1.133:6789/");
 
@@ -317,30 +311,21 @@
 			btnMode.onclick = function (event) {
                 websocket.send(JSON.stringify({action: 'btnMode'}));
             }
-			btnRepetitionPlus.onclick = function (event) {
-                websocket.send(JSON.stringify({action: 'btnRepetitionPlus'}));
-			}
-			btnRepetitionMinus.onclick = function (event) {
-                websocket.send(JSON.stringify({action: 'btnRepetitionMinus'}));
-			}
-			btnRepDurPlus.onclick = function (event) {
-                websocket.send(JSON.stringify({action: 'btnRepDurPlus'}));
-			}
-			btnRepDurMinus.onclick = function (event) {
-                websocket.send(JSON.stringify({action: 'btnRepDurMinus'}));
-			}
+			//selectMode.onclick = function (event) {
+            //    websocket.send(JSON.stringify({action: 'selectMode', value: selectMode.value}));
+            //}
             websocket.onmessage = function (event) {
                 data = JSON.parse(event.data);
                 switch (data.type) {
 					case 'power':
 					    if (data.value == true) {
-							labPower1.textContent = "STARTED";
+							labPower1.textContent = "ON";
 							labPower2.textContent = "ON";
 							btnMode.disabled = true;
 							btnPowerOn.disabled = true;
 							btnPowerOff.disabled = false;
 						} else {
-							labPower1.textContent = "STOPPED";
+							labPower1.textContent = "OFF";
 							labPower2.textContent = "OFF";
 							btnMode.disabled = false;
 							btnPowerOn.disabled = false;
@@ -368,12 +353,6 @@
 						break;
 					case 'live-mode':
 						labLiveMode.textContent = data.value;
-						break;
-					case 'labRepetition':
-						labRepetition.textContent = data.value;
-						break;
-					case 'labRepDur':
-						labRepDur.textContent = data.value;
                         break;
                     case 'users':
                         users.textContent = (
