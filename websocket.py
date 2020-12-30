@@ -232,12 +232,12 @@ class MassageDeviceControl:
         return self.repetition
 
     def set_duration_increase(self):
-        self.duration = self.duration + 1
+        self.duration = self.duration + 10
         if self.duration > 120:
             self.duration = 120
 
     def set_duration_decrease(self):
-        self.duration = self.duration - 1
+        self.duration = self.duration - 10
         if self.duration < 10:
             self.duration = 10
 
