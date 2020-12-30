@@ -130,7 +130,7 @@ class ProgrammTask:
             time.sleep(self.deviceControl.duration)
             device.off() ##########
             i += 1
-            time.sleep(self.deviceControl.pause) # ??? schlecht ...
+            time.sleep(self.deviceControl.pause)
         print("End Thread ...")
 
 class MassageDeviceControl:
@@ -492,7 +492,11 @@ async def counter(websocket, path):
         await unregister(websocket)
 
 
-start_server = websockets.serve(counter, "192.168.1.133", 6789)
+hostname = socket.gethostname()
+local_ip = socket.gethostbyname(hostname)
+print(local_ip)
 
+#start_server = websockets.serve(counter, "192.168.1.133", 6789)
+start_server = websockets.serve(counter, "", 6789)
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
