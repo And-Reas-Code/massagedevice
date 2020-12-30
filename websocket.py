@@ -13,7 +13,8 @@ import time
 import random
 import threading
 
-import http.server
+#import http.server
+from http.server import HTTPServer, CGIHTTPRequestHandler
 import socketserver
 
 # Inputs / Outputs
@@ -495,10 +496,22 @@ async def counter(websocket, path):
         await unregister(websocket)
 
 
-handler = http.server.SimpleHTTPRequestHandler
-with socketserver.TCPServer(("", 80), handler) as httpd:
-    print("Server started at localhost: 80")
+def start_server(path, port=80):
+    '''Start a simple webserver serving path on port'''
+    os.chdir(path)
+    httpd = HTTPServer(('', port), CGIHTTPRequestHandler)
     httpd.serve_forever()
+
+# Start the server in a new thread
+port = 8000
+daemon = threading.Thread(name='daemon_server', target=start_server, args=('./wwwroot/', port)
+daemon.setDaemon(True) # Set as a daemon so it will be killed once the main thread is dead.
+daemon.start()
+
+#handler = http.server.SimpleHTTPRequestHandler
+#with socketserver.TCPServer(("", 80), handler) as httpd:
+#    print("Server started at localhost: 80")
+#    httpd.serve_forever()
 
 print("Starte Websocket ...")
 start_server = websockets.serve(counter, "", 6789)
