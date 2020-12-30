@@ -12,7 +12,9 @@ import RPi.GPIO as GPIO
 import time
 import random
 import threading
-import socket
+
+import http.server
+import socketserver
 
 # Inputs / Outputs
 pin_button_on_off = 17
@@ -493,11 +495,12 @@ async def counter(websocket, path):
         await unregister(websocket)
 
 
-hostname = socket.gethostname()
-local_ip = socket.gethostbyname(hostname)
-print(local_ip)
+handler = http.server.SimpleHTTPRequestHandler
+with socketserver.TCPServer(("", 80), handler) as httpd:
+    print("Server started at localhost: 80")
+    httpd.serve_forever()
 
-#start_server = websockets.serve(counter, "192.168.1.133", 6789)
+print("Starte Websocket ...")
 start_server = websockets.serve(counter, "", 6789)
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
