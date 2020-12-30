@@ -18,7 +18,7 @@ import RPi.GPIO as GPIO
 import time
 import random
 import threading
-from test import Test1
+import test
 
 #import http.server
 from http.server import HTTPServer, CGIHTTPRequestHandler
@@ -484,7 +484,7 @@ class HttpServerWorker:
         httpd.serve_forever()
         print("End HttpServer ...")
 
-Test1.test()
+test.Test1.test()
 
 # Start the server in a new thread
 httpServerWorker = HttpServerWorker()
