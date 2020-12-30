@@ -475,10 +475,10 @@ async def counter(websocket, path):
             
             elif data["action"] == "btnRepetitionPlus":
                 deviceControl.set_repetition_increase()
-                await repetition_event()
+                await notify_repetition()
             elif data["action"] == "btnRepetitionMinus":
                 deviceControl.set_repetition_decrease()
-                await repetition_event()
+                await notify_repetition()
             elif data["action"] == "btnRepDurPlus":
                 deviceControl.set_duration_increase()
                 await notify_duration()
