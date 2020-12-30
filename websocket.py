@@ -1,7 +1,13 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
-# Verion 03 Massagedevice
+# Verion 05 Massagedevice
 # Funktionen: GUI Okay, inkl. Random-Mode
+#       - Strat / Stop Device
+#       - Level einstellen
+#       - Mode einstellen
+#       - Random-Mode mit mehreren Iterationen
+#       - Random Duration einstellbar
+#       - Randem Max / Min Level einstellbar
 
 import asyncio
 import json
@@ -290,26 +296,10 @@ class MassageDeviceControl:
         self.rand_level = random.randint(self.min_level,self.max_level)
         self.programm(self.rand_mode,self.rand_level)
 
-#    def thread_function(self):
-#        print("Start Thread ...")
-#        i = 1
-#        while i <= self.repetition:
-#            self.startProgrammRandom()
-#            self.liveMode = self.rand_mode
-#            self.electricityLiveLevel = self.rand_level
-#            self.electricityLevel = self.electricityLiveLevel
-#            time.sleep(self.duration)
-#            device.off()
-#            time.sleep(5) # ??? schlecht ...
-#            i += 1
-#        print("End Thread ...")
-
 deviceControl = MassageDeviceControl()
-
 logging.basicConfig()
 
 STATE ={"value": 0}
-
 USERS = set()
 
 def state_event():
@@ -345,49 +335,40 @@ def repetition_event():
 def duration_event():
     return json.dumps({"type": "labRepDur", "value": deviceControl.get_duration()})
 
-
-
 async def notify_state():
     if USERS:  # asyncio.wait doesn't accept an empty list
         message = state_event()
         await asyncio.wait([user.send(message) for user in USERS])
-
 
 async def notify_users():
     if USERS:  # asyncio.wait doesn't accept an empty list
         message = users_event()
         await asyncio.wait([user.send(message) for user in USERS])
 
-
 async def notify_power():
     if USERS:  # asyncio.wait doesn't accept an empty list
         message = power_event()
         await asyncio.wait([user.send(message) for user in USERS])
-
 
 async def notify_level():
     if USERS:  # asyncio.wait doesn't accept an empty list
         message = level_event()
         await asyncio.wait([user.send(message) for user in USERS])
 
-
 async def notify_live_level():
     if USERS:  # asyncio.wait doesn't accept an empty list
         message = live_level_event()
         await asyncio.wait([user.send(message) for user in USERS])
-
 
 async def notify_randMin():
     if USERS:  # asyncio.wait doesn't accept an empty list
         message = randMin_event()
         await asyncio.wait([user.send(message) for user in USERS])
 
-
 async def notify_randMax():
     if USERS:  # asyncio.wait doesn't accept an empty list
         message = randMax_event()
         await asyncio.wait([user.send(message) for user in USERS])
-
 
 async def notify_mode():
     if USERS:  # asyncio.wait doesn't accept an empty list
@@ -409,7 +390,6 @@ async def notify_duration():
         message = duration_event()
         await asyncio.wait([user.send(message) for user in USERS])
 
-
 async def register(websocket):
     USERS.add(websocket)
     await notify_users()
@@ -423,11 +403,9 @@ async def register(websocket):
     await notify_repetition()
     await notify_duration()
 
-
 async def unregister(websocket):
     USERS.remove(websocket)
     await notify_users()
-
 
 async def counter(websocket, path):
     # register(websocket) sends user_event() to websocket
