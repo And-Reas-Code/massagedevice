@@ -15,6 +15,7 @@ import threading
 
 #import http.server
 from http.server import HTTPServer, CGIHTTPRequestHandler
+import os
 import socketserver
 
 # Inputs / Outputs
@@ -496,17 +497,26 @@ async def counter(websocket, path):
         await unregister(websocket)
 
 
-def start_server(path, port=80):
-    '''Start a simple webserver serving path on port'''
-    os.chdir(path)
-    httpd = HTTPServer(('', port), CGIHTTPRequestHandler)
-    httpd.serve_forever()
+
+class HttpServerWorker:
+    def run(self):
+        '''Start a simple webserver serving path on port'''
+        print("Start HttpServer ...")
+        os.chdir('./wwwroot/')
+        httpd = HTTPServer(('', 80), CGIHTTPRequestHandler)
+        httpd.serve_forever()
+        print("End HttpServer ...")
 
 # Start the server in a new thread
-port = 8000
-daemon = threading.Thread(name='daemon_server', target=start_server, args=('./wwwroot/', port)
-daemon.setDaemon(True) # Set as a daemon so it will be killed once the main thread is dead.
-daemon.start()
+httpServerWorker = HttpServerWorker()
+httpThread = threading.Thread(target=httpServerWorker.run)
+httpThread.setDaemon(True) # Set as a daemon so it will be killed once the main thread is dead.
+httpThread.start()
+
+#port = 8000
+#daemon = threading.Thread(name='daemon_server', target=start_server, args=('./wwwroot/', port)
+#daemon.setDaemon(True) # Set as a daemon so it will be killed once the main thread is dead.
+#daemon.start()
 
 #handler = http.server.SimpleHTTPRequestHandler
 #with socketserver.TCPServer(("", 80), handler) as httpd:
