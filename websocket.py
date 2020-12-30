@@ -12,6 +12,7 @@ import RPi.GPIO as GPIO
 import time
 import random
 import threading
+import socket
 
 # Inputs / Outputs
 pin_button_on_off = 17
