@@ -136,7 +136,7 @@ class ProgrammTask:
     def terminate(self): 
         self._running = False
       
-    async def run(self):
+    def run(self):
         print("Start Thread ...")
         i = 1 
         while self._running and i <= self.deviceControl.repetition:
@@ -144,7 +144,7 @@ class ProgrammTask:
             self.deviceControl.liveMode = self.deviceControl.rand_mode
             self.deviceControl.electricityLiveLevel = self.deviceControl.rand_level
             self.deviceControl.electricityLevel = self.deviceControl.electricityLiveLevel
-            await self.deviceControl.subject_state("FIRE")
+            self.deviceControl.subject_state("FIRE")
             time.sleep(self.deviceControl.duration)
             self.device.off() ##########
             i += 1
@@ -347,7 +347,7 @@ class Observer(metaclass=abc.ABCMeta):
         self._observer_state = None
 
     @abc.abstractmethod
-    async def update(self, arg):
+    def update(self, arg):
         pass
 
 class WsWebsocket(Observer):
@@ -357,12 +357,12 @@ class WsWebsocket(Observer):
         self.STATE ={"value": 0}
         self.USERS = set()
 
-    async def update(self, arg):
+    def update(self, arg):
         self._observer_state = arg
         print("Observer infomiert, message: " + str(arg))
-        await self.notify_live_level()
-        await self.notify_live_mode()
-        await self.notify_level()
+        #await self.notify_live_level()
+        #await self.notify_live_mode()
+        #await self.notify_level()
 
     def state_event(self):
         return json.dumps({"type": "state", **self.STATE})
