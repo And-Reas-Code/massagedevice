@@ -44,6 +44,7 @@ GPIO.setup(pin_button_mode,GPIO.OUT)
 GPIO.setup(pin_button_time,GPIO.OUT)
 GPIO.setup(pin_status,GPIO.IN,pull_up_down=GPIO.PUD_UP)
 
+
 class MassageDevice:
 
     def bt_on_off(self):
@@ -120,11 +121,11 @@ class MassageDevice:
         self.set_mode(mode)
         self.set_level(level)
 
-device = MassageDevice()
 
 class ProgrammTask:
-    def __init__(self, deviceControl):
+    def __init__(self, deviceControl, device):
         self._running = True
+        self.device = device
         self.deviceControl = deviceControl
 
     def terminate(self): 
@@ -144,9 +145,11 @@ class ProgrammTask:
             time.sleep(self.deviceControl.pause)
         print("End Thread ...")
 
+
 class MassageDeviceControl:
 
-    def __init__(self):
+    def __init__(self, device):
+        self.device = device
         self.powerOn = False
         self.mode = 1
         self.liveMode = 1
@@ -184,7 +187,7 @@ class MassageDeviceControl:
 
     def set_level_increase(self):
         if self.powerOn == True:
-            device.bt_increase() ##########
+            self.device.bt_increase() ##########
         self.electricityLevel = self.electricityLevel + 1
         if self.electricityLevel > 15:
             self.electricityLevel = 15
@@ -193,7 +196,7 @@ class MassageDeviceControl:
 
     def set_level_decrease(self):
         if self.powerOn == True:
-            device.bt_decrease() ##########
+            self.device.bt_decrease() ##########
         self.electricityLevel = self.electricityLevel - 1
         if self.electricityLevel < 0:
             self.electricityLevel = 0
@@ -259,7 +262,7 @@ class MassageDeviceControl:
         self.powerOn = True
         if self.mode == 8:
             #self.thread = threading.Thread(target=self.thread_function)
-            self.programTask = ProgrammTask(self)
+            self.programTask = ProgrammTask(self, self.device)
             self.thread = threading.Thread(target=self.programTask.run)
             self.thread.start()
             #self.startProgrammRandom()
@@ -274,12 +277,12 @@ class MassageDeviceControl:
     def stop(self):
         if self.mode == 8:
             self.programTask.terminate()
-            device.off() ##########
+            self.device.off() ##########
             self.powerOn = False
             self.electricityLiveLevel = 0
             self.liveMode = 1
         else:
-            device.off() ##########
+            self.device.off() ##########
             self.powerOn = False
             self.electricityLiveLevel = 0
             self.liveMode = 1
@@ -289,19 +292,19 @@ class MassageDeviceControl:
 
     def programm(self,mode,level):
         print("Mode: " + str(mode) + "; Level: " + str(level))
-        device.programm(mode,level) ##########
+        self.device.programm(mode,level) ##########
 
     def startProgrammRandom(self):
         self.rand_mode = random.randint(1,7)
         self.rand_level = random.randint(self.min_level,self.max_level)
         self.programm(self.rand_mode,self.rand_level)
 
-deviceControl = MassageDeviceControl()
 #logging.basicConfig()
 
 class WsWebsocket:
 
-    def __init__(self):
+    def __init__(self, deviceControl):
+        self.deviceControl = deviceControl
         self.STATE ={"value": 0}
         self.USERS = set()
 
@@ -312,31 +315,31 @@ class WsWebsocket:
         return json.dumps({"type": "users", "count": len(self.USERS)})
 
     def power_event(self):
-        return json.dumps({"type": "power", "value": deviceControl.get_power_state()})
+        return json.dumps({"type": "power", "value": self.deviceControl.get_power_state()})
 
     def level_event(self):
-        return json.dumps({"type": "level", "value": deviceControl.get_level()})
+        return json.dumps({"type": "level", "value": self.deviceControl.get_level()})
 
     def live_level_event(self):
-        return json.dumps({"type": "live-level", "value": deviceControl.get_live_level()})
+        return json.dumps({"type": "live-level", "value": self.deviceControl.get_live_level()})
 
     def randMin_event(self):
-        return json.dumps({"type": "levelRandMin", "value": deviceControl.get_min_level()})
+        return json.dumps({"type": "levelRandMin", "value": self.deviceControl.get_min_level()})
 
     def randMax_event(self):
-        return json.dumps({"type": "levelRandMax", "value": deviceControl.get_max_level()})
+        return json.dumps({"type": "levelRandMax", "value": self.deviceControl.get_max_level()})
 
     def mode_event(self):
-        return json.dumps({"type": "mode", "value": deviceControl.get_mode()})
+        return json.dumps({"type": "mode", "value": self.deviceControl.get_mode()})
 
     def live_mode_event(self):
-        return json.dumps({"type": "live-mode", "value": deviceControl.get_live_mode()})
+        return json.dumps({"type": "live-mode", "value": self.deviceControl.get_live_mode()})
 
     def repetition_event(self):
-        return json.dumps({"type": "labRepetition", "value": deviceControl.get_repetition()})
+        return json.dumps({"type": "labRepetition", "value": self.deviceControl.get_repetition()})
 
     def duration_event(self):
-        return json.dumps({"type": "labRepDur", "value": deviceControl.get_duration()})
+        return json.dumps({"type": "labRepDur", "value": self.deviceControl.get_duration()})
 
     async def notify_state(self):
         if self.USERS:  # asyncio.wait doesn't accept an empty list
@@ -419,7 +422,7 @@ class WsWebsocket:
                 data = json.loads(message)
 
                 if data["action"] == "btnPowerOn":
-                    deviceControl.start()
+                    self.deviceControl.start()
                     await self.notify_live_level()
                     await self.notify_live_mode()
                     await self.notify_level()
@@ -431,45 +434,45 @@ class WsWebsocket:
                     await self.notify_power()
 
                 elif data["action"] == "btnElectricityPlus":
-                    deviceControl.set_level_increase()
+                    self.deviceControl.set_level_increase()
                     await self.notify_live_mode()
                     await self.notify_live_level()
                     await self.notify_level()
                 elif data["action"] == "btnElectricityMinus":
-                    deviceControl.set_level_decrease()
+                    self.deviceControl.set_level_decrease()
                     await self.notify_live_mode()
                     await self.notify_live_level()
                     await self.notify_level()
 
                 elif data["action"] == "btnRandMinMinus":
-                    deviceControl.set_min_level(deviceControl.get_min_level() - 1)
+                    self.deviceControl.set_min_level(self.deviceControl.get_min_level() - 1)
                     await self.notify_randMin()
                 elif data["action"] == "btnRandMinPlus":
-                    deviceControl.set_min_level(deviceControl.get_min_level() + 1)
+                    deviceControl.set_min_level(self.deviceControl.get_min_level() + 1)
                     await self.notify_randMin()
 
                 elif data["action"] == "btnRandMaxMinus":
-                    deviceControl.set_max_level(deviceControl.get_max_level() - 1)
+                    self.deviceControl.set_max_level(self.deviceControl.get_max_level() - 1)
                     await self.notify_randMax()
                 elif data["action"] == "btnRandMaxPlus":
-                    deviceControl.set_max_level(deviceControl.get_max_level() + 1)
+                    self.deviceControl.set_max_level(self.deviceControl.get_max_level() + 1)
                     await self.notify_randMax()
 
                 elif data["action"] == "btnMode":
-                    deviceControl.set_mode()
+                    self.deviceControl.set_mode()
                     await self.notify_mode()
 
                 elif data["action"] == "btnRepetitionPlus":
-                    deviceControl.set_repetition_increase()
+                    self.deviceControl.set_repetition_increase()
                     await self.notify_repetition()
                 elif data["action"] == "btnRepetitionMinus":
-                    deviceControl.set_repetition_decrease()
+                    self.deviceControl.set_repetition_decrease()
                     await self.notify_repetition()
                 elif data["action"] == "btnRepDurPlus":
-                    deviceControl.set_duration_increase()
+                    self.deviceControl.set_duration_increase()
                     await self.notify_duration()
                 elif data["action"] == "btnRepDurMinus":
-                    deviceControl.set_duration_decrease()
+                    self.deviceControl.set_duration_decrease()
                     await self.notify_duration()
 
                 else:
@@ -487,13 +490,17 @@ class HttpServerWorker:
         httpd.serve_forever()
         print("End HttpServer ...")
 
+
+
 # Start the server in a new thread
 httpServerWorker = HttpServerWorker()
 httpThread = threading.Thread(target=httpServerWorker.run)
 httpThread.setDaemon(True) # Set as a daemon so it will be killed once the main thread is dead.
 httpThread.start()
 
-wsWebsocket = WsWebsocket()
+device = MassageDevice()
+deviceControl = MassageDeviceControl(device)
+wsWebsocket = WsWebsocket(deviceControl)
 
 print("Starte Websocket ...")
 start_server = websockets.serve(wsWebsocket.counter, "", 6789)
