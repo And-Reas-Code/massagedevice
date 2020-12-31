@@ -357,12 +357,12 @@ class WsWebsocket(Observer):
         self.STATE ={"value": 0}
         self.USERS = set()
 
-    def update(self, arg):
+    async def update(self, arg):
         self._observer_state = arg
         print("Observer infomiert, message: " + str(arg))
-        self.notify_live_level()
-        self.notify_live_mode()
-        self.notify_level()
+        await self.notify_live_level()
+        await self.notify_live_mode()
+        await self.notify_level()
 
     def state_event(self):
         return json.dumps({"type": "state", **self.STATE})
@@ -558,7 +558,7 @@ def main():
     device = MassageDevice()
     deviceControl = MassageDeviceControl(device)
     wsWebsocket = WsWebsocket(deviceControl)
-    #deviceControl.attach(wsWebsocket) # Observer verbinden
+    deviceControl.attach(wsWebsocket) # Observer verbinden
 
     print("Starte Websocket ...")
     start_server = websockets.serve(wsWebsocket.counter, "", 6789)
