@@ -406,7 +406,8 @@ class WsWebsocket(Observer):
     async def notify_users(self):
         if self.USERS:  # asyncio.wait doesn't accept an empty list
             message = self.users_event()
-            await asyncio.wait([user.send(message) for user in self.USERS])
+            #await asyncio.wait([user.send(message) for user in self.USERS])
+            asyncio.wait([user.send(message) for user in self.USERS])
 
     async def notify_power(self):
         if self.USERS:  # asyncio.wait doesn't accept an empty list
@@ -417,13 +418,15 @@ class WsWebsocket(Observer):
     def notify_level(self):
         if self.USERS:  # asyncio.wait doesn't accept an empty list
             message = self.level_event()
-            await asyncio.wait([user.send(message) for user in self.USERS])
+            #await asyncio.wait([user.send(message) for user in self.USERS])
+            asyncio.wait([user.send(message) for user in self.USERS])
 
 #    async def notify_live_level(self):
     async def notify_live_level(self):
         if self.USERS:  # asyncio.wait doesn't accept an empty list
             message = self.live_level_event()
-            await asyncio.wait([user.send(message) for user in self.USERS])
+            #await asyncio.wait([user.send(message) for user in self.USERS])
+            asyncio.wait([user.send(message) for user in self.USERS])
 
     async def notify_randMin(self):
         if self.USERS:  # asyncio.wait doesn't accept an empty list
