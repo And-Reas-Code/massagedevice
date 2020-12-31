@@ -413,11 +413,13 @@ class WsWebsocket(Observer):
             message = self.power_event()
             await asyncio.wait([user.send(message) for user in self.USERS])
 
-    async def notify_level(self):
+#    async def notify_level(self):
+    def notify_level(self):
         if self.USERS:  # asyncio.wait doesn't accept an empty list
             message = self.level_event()
             await asyncio.wait([user.send(message) for user in self.USERS])
 
+#    async def notify_live_level(self):
     async def notify_live_level(self):
         if self.USERS:  # asyncio.wait doesn't accept an empty list
             message = self.live_level_event()
@@ -438,7 +440,8 @@ class WsWebsocket(Observer):
             message = self.mode_event()
             await asyncio.wait([user.send(message) for user in self.USERS])
 
-    async def notify_live_mode(self):
+#    async def notify_live_mode(self):
+    def notify_live_mode(self):
         if self.USERS:  # asyncio.wait doesn't accept an empty list
             message = self.live_mode_event()
             await asyncio.wait([user.send(message) for user in self.USERS])
