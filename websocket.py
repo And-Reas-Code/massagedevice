@@ -330,9 +330,9 @@ class MassageDeviceControl:
         return self._subject_state
 
     @subject_state.setter
-    def subject_state(self, arg):
+    async def subject_state(self, arg):
         self._subject_state = arg
-        self._notify()
+        await self._notify()
 
 #logging.basicConfig()
 
@@ -347,7 +347,7 @@ class Observer(metaclass=abc.ABCMeta):
         self._observer_state = None
 
     @abc.abstractmethod
-    async def update(self, arg):
+    def update(self, arg):
         pass
 
 class WsWebsocket(Observer):
