@@ -133,9 +133,6 @@ class ProgrammTask:
         self._running = True
         self.device = device
         self.deviceControl = deviceControl
-        # Subject vars:
-        self._observers = set()
-        self._subject_state = None
 
     def terminate(self): 
         self._running = False
@@ -144,7 +141,7 @@ class ProgrammTask:
         print("Start Thread ...")
         i = 1 
         while self._running and i <= self.deviceControl.repetition:
-            self.subject_state = 123
+            self.deviceControl.subject_state = 123
             self.deviceControl.startProgrammRandom()
             self.deviceControl.liveMode = self.deviceControl.rand_mode
             self.deviceControl.electricityLiveLevel = self.deviceControl.rand_level
@@ -154,32 +151,6 @@ class ProgrammTask:
             i += 1
             time.sleep(self.deviceControl.pause)
         print("End Thread ...")
-
-    """
-    Know its observers. Any number of Observer objects may observe a
-    subject.
-    Send a notification to its observers when its state changes.
-    """
-    def attach(self, observer):
-        observer._subject = self
-        self._observers.add(observer)
-
-    def detach(self, observer):
-        observer._subject = None
-        self._observers.discard(observer)
-
-    def _notify(self):
-        for observer in self._observers:
-            observer.update(self._subject_state)
-
-    @property
-    def subject_state(self):
-        return self._subject_state
-
-    @subject_state.setter
-    def subject_state(self, arg):
-        self._subject_state = arg
-        self._notify()
 
 
 class MassageDeviceControl:
@@ -201,6 +172,9 @@ class MassageDeviceControl:
         self.repetition = 1
         self.duration = 10
         self.pause = 10
+        # Subject vars:
+        self._observers = set()
+        self._subject_state = None
 
     def get_power_state(self):
         return self.powerOn
@@ -322,7 +296,7 @@ class MassageDeviceControl:
             self.powerOn = False
             self.electricityLiveLevel = 0
             self.liveMode = 1
-
+        
     def startProgramm(self):
         self.programm(self.mode,self.electricityLevel)
 
@@ -334,6 +308,32 @@ class MassageDeviceControl:
         self.rand_mode = random.randint(1,7)
         self.rand_level = random.randint(self.min_level,self.max_level)
         self.programm(self.rand_mode,self.rand_level)
+    
+    """
+    Know its observers. Any number of Observer objects may observe a
+    subject.
+    Send a notification to its observers when its state changes.
+    """
+    def attach(self, observer):
+        observer._subject = self
+        self._observers.add(observer)
+
+    def detach(self, observer):
+        observer._subject = None
+        self._observers.discard(observer)
+
+    def _notify(self):
+        for observer in self._observers:
+            observer.update(self._subject_state)
+
+    @property
+    def subject_state(self):
+        return self._subject_state
+
+    @subject_state.setter
+    def subject_state(self, arg):
+        self._subject_state = arg
+        self._notify()
 
 #logging.basicConfig()
 
@@ -556,7 +556,7 @@ def main():
     device = MassageDevice()
     deviceControl = MassageDeviceControl(device)
     wsWebsocket = WsWebsocket(deviceControl)
-    deviceControl.programTask.attach(wsWebsocket) 
+    deviceControl.attach(wsWebsocket) # Observer verbinden
 
     print("Starte Websocket ...")
     start_server = websockets.serve(wsWebsocket.counter, "", 6789)
