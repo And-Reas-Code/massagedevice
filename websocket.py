@@ -140,11 +140,12 @@ class ProgrammTask:
         print("Start Thread ...")
         i = 1 
         while self._running and i <= self.deviceControl.repetition:
+            self.deviceControl.subject_state = "FIRE"
             self.deviceControl.startProgrammRandom()
             self.deviceControl.liveMode = self.deviceControl.rand_mode
             self.deviceControl.electricityLiveLevel = self.deviceControl.rand_level
             self.deviceControl.electricityLevel = self.deviceControl.electricityLiveLevel
-            self.deviceControl.subject_state = "FIRE"
+            #self.deviceControl.subject_state = "FIRE"
             time.sleep(self.deviceControl.duration)
             self.device.off() ##########
             i += 1
@@ -330,9 +331,9 @@ class MassageDeviceControl:
         return self._subject_state
 
     @subject_state.setter
-    async def subject_state(self, arg):
+    def subject_state(self, arg):
         self._subject_state = arg
-        await self._notify()
+        self._notify()
 
 #logging.basicConfig()
 
