@@ -23,7 +23,6 @@ import time
 import random
 import threading
 
-#import http.server
 from http.server import HTTPServer, CGIHTTPRequestHandler
 import os
 import socketserver
@@ -398,251 +397,146 @@ class WsWebsocket(Observer):
     def duration_event(self):
         return json.dumps({"type": "labRepDur", "value": self.deviceControl.get_duration()})
 
-#    async def notify_state(self):
-    def notify_state(self):
+    async def notify_state(self):
         if self.USERS:  # asyncio.wait doesn't accept an empty list
             message = self.state_event()
-            #await asyncio.wait([user.send(message) for user in self.USERS])
-            [user.send(message) for user in self.USERS]
+            await asyncio.wait([user.send(message) for user in self.USERS])
 
-#    async def notify_users(self):
-    def notify_users(self):
+    async def notify_users(self):
         if self.USERS:  # asyncio.wait doesn't accept an empty list
             message = self.users_event()
-            #await asyncio.wait([user.send(message) for user in self.USERS])
-            [user.send(message) for user in self.USERS]
+            await asyncio.wait([user.send(message) for user in self.USERS])
 
-#    async def notify_power(self):
-    def notify_power(self):
+    async def notify_power(self):
         if self.USERS:  # asyncio.wait doesn't accept an empty list
             message = self.power_event()
-            #await asyncio.wait([user.send(message) for user in self.USERS])
-            [user.send(message) for user in self.USERS]
+            await asyncio.wait([user.send(message) for user in self.USERS])
 
-#    async def notify_level(self):
-    def notify_level(self):
+    async def notify_level(self):
         if self.USERS:  # asyncio.wait doesn't accept an empty list
             message = self.level_event()
-            #await asyncio.wait([user.send(message) for user in self.USERS])
-            [user.send(message) for user in self.USERS]
+            await asyncio.wait([user.send(message) for user in self.USERS])
 
-#    async def notify_live_level(self):
-    def notify_live_level(self):
+    async def notify_live_level(self):
         if self.USERS:  # asyncio.wait doesn't accept an empty list
             message = self.live_level_event()
-            #await asyncio.wait([user.send(message) for user in self.USERS])
-            [user.send(message) for user in self.USERS]
+            await asyncio.wait([user.send(message) for user in self.USERS])
 
-#    async def notify_randMin(self):
-    def notify_randMin(self):
+    async def notify_randMin(self):
         if self.USERS:  # asyncio.wait doesn't accept an empty list
             message = self.randMin_event()
-            #await asyncio.wait([user.send(message) for user in self.USERS])
-            [user.send(message) for user in self.USERS]
+            await asyncio.wait([user.send(message) for user in self.USERS])
 
-#    async def notify_randMax(self):
-    def notify_randMax(self):
+    async def notify_randMax(self):
         if self.USERS:  # asyncio.wait doesn't accept an empty list
             message = self.randMax_event()
-            #await asyncio.wait([user.send(message) for user in self.USERS])
-            [user.send(message) for user in self.USERS]
+            await asyncio.wait([user.send(message) for user in self.USERS])
 
-#    async def notify_mode(self):
-    def notify_mode(self):
+    async def notify_mode(self):
         if self.USERS:  # asyncio.wait doesn't accept an empty list
             message = self.mode_event()
-            #await asyncio.wait([user.send(message) for user in self.USERS])
-            [user.send(message) for user in self.USERS]
+            await asyncio.wait([user.send(message) for user in self.USERS])
 
-#    async def notify_live_mode(self):
-    def notify_live_mode(self):
+    async def notify_live_mode(self):
         if self.USERS:  # asyncio.wait doesn't accept an empty list
             message = self.live_mode_event()
-            #await asyncio.wait([user.send(message) for user in self.USERS])
-            [user.send(message) for user in self.USERS]
+            await asyncio.wait([user.send(message) for user in self.USERS])
 
-#    async def notify_repetition(self):
-    def notify_repetition(self):
+    async def notify_repetition(self):
         if self.USERS:  # asyncio.wait doesn't accept an empty list
             message = self.repetition_event()
-            #await asyncio.wait([user.send(message) for user in self.USERS])
-            [user.send(message) for user in self.USERS]
+            await asyncio.wait([user.send(message) for user in self.USERS])
 
-#    async def notify_duration(self):
-    def notify_duration(self):
+    async def notify_duration(self):
         if self.USERS:  # asyncio.wait doesn't accept an empty list
             message = self.duration_event()
-            #await asyncio.wait([user.send(message) for user in self.USERS])
-            [user.send(message) for user in self.USERS]
+            await asyncio.wait([user.send(message) for user in self.USERS])
 
-#    async def register(self, websocket):
-    def register(self, websocket):
+    async def register(self, websocket):
         self.USERS.add(websocket)
-        #await self.notify_users()
-        #await self.notify_power()
-        #await self.notify_mode()
-        #wait self.notify_live_mode()
-        #wait self.notify_level()
-        #wait self.notify_live_level()
-        #wait self.notify_randMin()
-        #wait self.notify_randMax()
-        #wait self.notify_repetition()
-        #wait self.notify_duration()
-        self.notify_users()
-        self.notify_power()
-        self.notify_mode()
-        self.notify_live_mode()
-        self.notify_level()
-        self.notify_live_level()
-        self.notify_randMin()
-        self.notify_randMax()
-        self.notify_repetition()
-        self.notify_duration()
+        await self.notify_users()
+        await self.notify_power()
+        await self.notify_mode()
+        await self.notify_live_mode()
+        await self.notify_level()
+        await self.notify_live_level()
+        await self.notify_randMin()
+        await self.notify_randMax()
+        await self.notify_repetition()
+        await self.notify_duration()
 
-
-#    async def unregister(self, websocket):
-#        self.USERS.remove(websocket)
-#        await self.notify_users()
-#
-#    async def counter(self, websocket, path):
-#        # register(websocket) sends user_event() to websocket
-#        await self.register(websocket)
-#        try:
-#            await websocket.send(self.state_event())
-#            async for message in websocket:
-#                data = json.loads(message)
-#
-#                if data["action"] == "btnPowerOn":
-#                    self.deviceControl.start()
-#                    await self.notify_live_level()
-#                    await self.notify_live_mode()
-#                    await self.notify_level()
-#                    await self.notify_power()
-#                elif data["action"] == "btnPowerOff":
-#                    self.deviceControl.stop()
-#                    await self.notify_live_level()
-#                    await self.notify_live_mode()
-#                    await self.notify_power()
-#
-#                elif data["action"] == "btnElectricityPlus":
-#                    self.deviceControl.set_level_increase()
-#                    await self.notify_live_mode()
-#                    await self.notify_live_level()
-#                    await self.notify_level()
-#                elif data["action"] == "btnElectricityMinus":
-#                    self.deviceControl.set_level_decrease()
-#                    await self.notify_live_mode()
-#                    await self.notify_live_level()
-#                    await self.notify_level()
-#
-#                elif data["action"] == "btnRandMinMinus":
-#                    self.deviceControl.set_min_level(self.deviceControl.get_min_level() - 1)
-#                    await self.notify_randMin()
-#                elif data["action"] == "btnRandMinPlus":
-#                    self.deviceControl.set_min_level(self.deviceControl.get_min_level() + 1)
-#                    await self.notify_randMin()
-#
-#                elif data["action"] == "btnRandMaxMinus":
-#                    self.deviceControl.set_max_level(self.deviceControl.get_max_level() - 1)
-#                    await self.notify_randMax()
-#                elif data["action"] == "btnRandMaxPlus":
-#                    self.deviceControl.set_max_level(self.deviceControl.get_max_level() + 1)
-#                    await self.notify_randMax()
-#
-#                elif data["action"] == "btnMode":
-#                    self.deviceControl.set_mode()
-#                    await self.notify_mode()
-#
-#                elif data["action"] == "btnRepetitionPlus":
-#                    self.deviceControl.set_repetition_increase()
-#                    await self.notify_repetition()
-#                elif data["action"] == "btnRepetitionMinus":
-#                    self.deviceControl.set_repetition_decrease()
-#                    await self.notify_repetition()
-#                elif data["action"] == "btnRepDurPlus":
-#                    self.deviceControl.set_duration_increase()
-#                    await self.notify_duration()
-#                elif data["action"] == "btnRepDurMinus":
-#                    self.deviceControl.set_duration_decrease()
-#                    await self.notify_duration()
-#
-#                else:
-#                    #logging.error("unsupported event: {}", data)
-#                    print("unsupported event: {}", data)
-#        finally:
-#            await self.unregister(websocket)
-
-
-    def unregister(self, websocket):
+    async def unregister(self, websocket):
         self.USERS.remove(websocket)
-        self.notify_users()
+        await self.notify_users()
 
-    def counter(self, websocket, path):
+    async def counter(self, websocket, path):
         # register(websocket) sends user_event() to websocket
-        self.register(websocket)
+        await self.register(websocket)
         try:
-            websocket.send(self.state_event())
-            for message in websocket:
+            await websocket.send(self.state_event())
+            async for message in websocket:
                 data = json.loads(message)
 
                 if data["action"] == "btnPowerOn":
                     self.deviceControl.start()
-                    self.notify_live_level()
-                    self.notify_live_mode()
-                    self.notify_level()
-                    self.notify_power()
+                    await self.notify_live_level()
+                    await self.notify_live_mode()
+                    await self.notify_level()
+                    await self.notify_power()
                 elif data["action"] == "btnPowerOff":
                     self.deviceControl.stop()
-                    self.notify_live_level()
-                    self.notify_live_mode()
-                    self.notify_power()
+                    await self.notify_live_level()
+                    await self.notify_live_mode()
+                    await self.notify_power()
+
                 elif data["action"] == "btnElectricityPlus":
                     self.deviceControl.set_level_increase()
-                    self.notify_live_mode()
-                    self.notify_live_level()
-                    self.notify_level()
+                    await self.notify_live_mode()
+                    await self.notify_live_level()
+                    await self.notify_level()
                 elif data["action"] == "btnElectricityMinus":
                     self.deviceControl.set_level_decrease()
-                    self.notify_live_mode()
-                    self.notify_live_level()
-                    self.notify_level()
+                    await self.notify_live_mode()
+                    await self.notify_live_level()
+                    await self.notify_level()
 
                 elif data["action"] == "btnRandMinMinus":
                     self.deviceControl.set_min_level(self.deviceControl.get_min_level() - 1)
-                    self.notify_randMin()
+                    await self.notify_randMin()
                 elif data["action"] == "btnRandMinPlus":
                     self.deviceControl.set_min_level(self.deviceControl.get_min_level() + 1)
-                    self.notify_randMin()
+                    await self.notify_randMin()
 
                 elif data["action"] == "btnRandMaxMinus":
                     self.deviceControl.set_max_level(self.deviceControl.get_max_level() - 1)
-                    self.notify_randMax()
+                    await self.notify_randMax()
                 elif data["action"] == "btnRandMaxPlus":
                     self.deviceControl.set_max_level(self.deviceControl.get_max_level() + 1)
-                    self.notify_randMax()
+                    await self.notify_randMax()
 
                 elif data["action"] == "btnMode":
                     self.deviceControl.set_mode()
-                    self.notify_mode()
+                    await self.notify_mode()
 
                 elif data["action"] == "btnRepetitionPlus":
                     self.deviceControl.set_repetition_increase()
-                    self.notify_repetition()
+                    await self.notify_repetition()
                 elif data["action"] == "btnRepetitionMinus":
                     self.deviceControl.set_repetition_decrease()
-                    self.notify_repetition()
+                    await self.notify_repetition()
                 elif data["action"] == "btnRepDurPlus":
                     self.deviceControl.set_duration_increase()
-                    self.notify_duration()
+                    await self.notify_duration()
                 elif data["action"] == "btnRepDurMinus":
                     self.deviceControl.set_duration_decrease()
-                    self.notify_duration()
+                    await self.notify_duration()
 
                 else:
                     #logging.error("unsupported event: {}", data)
                     print("unsupported event: {}", data)
         finally:
-            self.unregister(websocket)
+            await self.unregister(websocket)
+
 
 class HttpServerWorker:
     def run(self):
@@ -664,7 +558,7 @@ def main():
     device = MassageDevice()
     deviceControl = MassageDeviceControl(device)
     wsWebsocket = WsWebsocket(deviceControl)
-    deviceControl.attach(wsWebsocket) # Observer verbinden
+    #deviceControl.attach(wsWebsocket) # Observer verbinden
 
     print("Starte Websocket ...")
     start_server = websockets.serve(wsWebsocket.counter, "", 6789)
