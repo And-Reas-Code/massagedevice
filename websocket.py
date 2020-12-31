@@ -360,7 +360,7 @@ class WsWebsocket(Observer):
     def update(self, arg):
         self._observer_state = arg
         print("Observer infomiert, message: " + str(arg))
-        #await self.notify_live_level()
+        self.notify_live_level()
         #await self.notify_live_mode()
         #await self.notify_level()
 
