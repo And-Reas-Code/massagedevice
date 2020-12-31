@@ -347,7 +347,7 @@ class Observer(metaclass=abc.ABCMeta):
         self._observer_state = None
 
     @abc.abstractmethod
-    def update(self, arg):
+    async def update(self, arg):
         pass
 
 class WsWebsocket(Observer):
