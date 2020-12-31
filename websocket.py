@@ -360,7 +360,7 @@ class WsWebsocket(Observer):
     def update(self, arg):
         self._observer_state = arg
         print("Observer infomiert, message: " + str(arg))
-        self.notify_live_level()
+        #self.notify_live_level()
         #await self.notify_live_mode()
         #await self.notify_level()
 
@@ -564,6 +564,7 @@ def main():
     start_server = websockets.serve(wsWebsocket.counter, "", 6789)
     asyncio.get_event_loop().run_until_complete(start_server)
     asyncio.get_event_loop().run_forever()
+    
 
 if __name__ == "__main__":
     main()
