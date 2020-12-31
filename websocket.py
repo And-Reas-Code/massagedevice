@@ -140,7 +140,7 @@ class ProgrammTask:
             self.deviceControl.electricityLiveLevel = self.deviceControl.rand_level
             self.deviceControl.electricityLevel = self.deviceControl.electricityLiveLevel
             time.sleep(self.deviceControl.duration)
-            device.off() ##########
+            self.device.off() ##########
             i += 1
             time.sleep(self.deviceControl.pause)
         print("End Thread ...")
@@ -428,7 +428,7 @@ class WsWebsocket:
                     await self.notify_level()
                     await self.notify_power()
                 elif data["action"] == "btnPowerOff":
-                    deviceControl.stop()
+                    self.deviceControl.stop()
                     await self.notify_live_level()
                     await self.notify_live_mode()
                     await self.notify_power()
@@ -448,7 +448,7 @@ class WsWebsocket:
                     self.deviceControl.set_min_level(self.deviceControl.get_min_level() - 1)
                     await self.notify_randMin()
                 elif data["action"] == "btnRandMinPlus":
-                    deviceControl.set_min_level(self.deviceControl.get_min_level() + 1)
+                    self.deviceControl.set_min_level(self.deviceControl.get_min_level() + 1)
                     await self.notify_randMin()
 
                 elif data["action"] == "btnRandMaxMinus":
@@ -491,18 +491,21 @@ class HttpServerWorker:
         print("End HttpServer ...")
 
 
+def main():
+    # Start the server in a new thread
+    httpServerWorker = HttpServerWorker()
+    httpThread = threading.Thread(target=httpServerWorker.run)
+    httpThread.setDaemon(True) # Set as a daemon so it will be killed once the main thread is dead.
+    httpThread.start()
 
-# Start the server in a new thread
-httpServerWorker = HttpServerWorker()
-httpThread = threading.Thread(target=httpServerWorker.run)
-httpThread.setDaemon(True) # Set as a daemon so it will be killed once the main thread is dead.
-httpThread.start()
+    device = MassageDevice()
+    deviceControl = MassageDeviceControl(device)
+    wsWebsocket = WsWebsocket(deviceControl)
 
-device = MassageDevice()
-deviceControl = MassageDeviceControl(device)
-wsWebsocket = WsWebsocket(deviceControl)
+    print("Starte Websocket ...")
+    start_server = websockets.serve(wsWebsocket.counter, "", 6789)
+    asyncio.get_event_loop().run_until_complete(start_server)
+    asyncio.get_event_loop().run_forever()
 
-print("Starte Websocket ...")
-start_server = websockets.serve(wsWebsocket.counter, "", 6789)
-asyncio.get_event_loop().run_until_complete(start_server)
-asyncio.get_event_loop().run_forever()
+if __name__ == "__main__":
+    main()
