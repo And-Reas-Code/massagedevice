@@ -144,7 +144,7 @@ class ProgrammTask:
             self.deviceControl.liveMode = self.deviceControl.rand_mode
             self.deviceControl.electricityLiveLevel = self.deviceControl.rand_level
             self.deviceControl.electricityLevel = self.deviceControl.electricityLiveLevel
-            self.deviceControl.subject_state("FIRE")
+            self.deviceControl.subject_state = "FIRE"
             time.sleep(self.deviceControl.duration)
             self.device.off() ##########
             i += 1
