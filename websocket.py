@@ -141,11 +141,11 @@ class ProgrammTask:
         print("Start Thread ...")
         i = 1 
         while self._running and i <= self.deviceControl.repetition:
-            self.deviceControl.subject_state = 123
             self.deviceControl.startProgrammRandom()
             self.deviceControl.liveMode = self.deviceControl.rand_mode
             self.deviceControl.electricityLiveLevel = self.deviceControl.rand_level
             self.deviceControl.electricityLevel = self.deviceControl.electricityLiveLevel
+            self.deviceControl.subject_state = "FIRE"
             time.sleep(self.deviceControl.duration)
             self.device.off() ##########
             i += 1
@@ -363,6 +363,7 @@ class WsWebsocket(Observer):
         print("Observer infomiert, message: " + str(arg))
         self.notify_live_level()
         self.notify_live_mode()
+        self.notify_level()
 
     def state_event(self):
         return json.dumps({"type": "state", **self.STATE})
