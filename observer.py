@@ -64,7 +64,7 @@ class ConcreteObserver(Observer):
     def update(self, arg):
         self._observer_state = arg
         # ...
-        print("TEST")
+        print(arg)
 
 
 def main():
