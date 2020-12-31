@@ -360,7 +360,7 @@ class WsWebsocket(Observer):
 
     def update(self, arg):
         self._observer_state = arg
-        print("Observer infomiert, message: " + arg)
+        print("Observer infomiert, message: " + str(arg))
         # ...
 
     def state_event(self):
