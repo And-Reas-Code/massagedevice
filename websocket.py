@@ -361,7 +361,8 @@ class WsWebsocket(Observer):
     def update(self, arg):
         self._observer_state = arg
         print("Observer infomiert, message: " + str(arg))
-        # ...
+        self.notify_live_level()
+        self.notify_live_mode()
 
     def state_event(self):
         return json.dumps({"type": "state", **self.STATE})
