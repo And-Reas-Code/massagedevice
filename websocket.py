@@ -27,9 +27,11 @@ import sys
 #import RPi.GPIO as GPIO
 
 if os.name == "posix" and sys.platform == "linux":
-    import massagedevice as device
+    import massagedevice
+    print("Real-Mode...")
 else:
-    import massagedevicedummy as device
+    import massagedevicedummy as massagedevice
+    print("Dummy-Mode...")
 
 import time
 import random
@@ -637,7 +639,7 @@ def main():
     httpThread.setDaemon(True) # Set as a daemon so it will be killed once the main thread is dead.
     httpThread.start()
 
-    #device = MassageDevice()
+    device = massagedevice.MassageDevice()
     deviceControl = MassageDeviceControl(device)
     wsWebsocket = WsWebsocket(deviceControl)
     deviceControl.attach(wsWebsocket) # Observer verbinden
