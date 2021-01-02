@@ -157,10 +157,14 @@ class ProgrammTask:
             #self.deviceControl.subject_state = "FIRE"
             time.sleep(self.deviceControl.duration)
             self.device.off() ##########
+            self.deviceControl.liveMode = 1
+            self.deviceControl.electricityLiveLevel = 0
             self.deviceControl.subject_state = "FIRE"
             i += 1
             time.sleep(self.deviceControl.pause)
         print("End Thread ...")
+        self.deviceControl.powerOn = False
+        self.deviceControl.subject_state = "FIRE"
 
 
 class MassageDeviceControl:
