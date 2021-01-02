@@ -535,7 +535,7 @@ class WsWebsocket(Observer):
         await self.notify_randMax()
         await self.notify_repetition()
         await self.notify_duration()
-        await self.start_delay_event()
+        await self.notify_start_delay()
 
     async def unregister(self, websocket):
         self.USERS.remove(websocket)
