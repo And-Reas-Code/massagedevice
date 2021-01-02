@@ -566,7 +566,7 @@ class HttpServerWorker:
         print("End HttpServer ...")
 
 
-def main():
+def main(self):
     # Start the server in a new thread
     httpServerWorker = HttpServerWorker()
     httpThread = threading.Thread(target=httpServerWorker.run)
