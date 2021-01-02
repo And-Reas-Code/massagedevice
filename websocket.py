@@ -147,7 +147,7 @@ class ProgrammTask:
     def run(self):
         print("Start Thread ...")
         i = 1
-        time.sleep(self.deviceControl.start_delay)
+        #time.sleep(self.deviceControl.start_delay)
         while self._running and i <= self.deviceControl.repetition:
             self.deviceControl.genProgrammRandomLevelMode()
             self.deviceControl.liveMode = self.deviceControl.rand_mode
