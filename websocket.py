@@ -382,6 +382,9 @@ class WsWebsocket(Observer):
         await self.notify_level()
         return "DONE"
 
+    def set_event_loop(self, loop):
+        self.loop = loop
+
     def state_event(self):
         return json.dumps({"type": "state", **self.STATE})
 
@@ -566,7 +569,7 @@ class HttpServerWorker:
         print("End HttpServer ...")
 
 
-def main(self):
+def main():
     # Start the server in a new thread
     httpServerWorker = HttpServerWorker()
     httpThread = threading.Thread(target=httpServerWorker.run)
@@ -581,7 +584,7 @@ def main(self):
     print("Starte Websocket ...")
     start_server = websockets.serve(wsWebsocket.counter, "", 6789)
     asyncio.get_event_loop().run_until_complete(start_server)
-    self.loop = asyncio.get_event_loop()
+    wsWebsocket.set_event_loop(asyncio.get_event_loop())
     asyncio.get_event_loop().run_forever()
     
 
