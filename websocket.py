@@ -148,13 +148,16 @@ class ProgrammTask:
         print("Start Thread ...")
         i = 1 
         while self._running and i <= self.deviceControl.repetition:
-            self.deviceControl.startProgrammRandom()
+            self.deviceControl.genProgrammRandomLevelMode()
             self.deviceControl.liveMode = self.deviceControl.rand_mode
             self.deviceControl.electricityLiveLevel = self.deviceControl.rand_level
             self.deviceControl.electricityLevel = self.deviceControl.electricityLiveLevel
             self.deviceControl.subject_state = "FIRE"
+            self.deviceControl.startProgrammRandom()
+            #self.deviceControl.subject_state = "FIRE"
             time.sleep(self.deviceControl.duration)
             self.device.off() ##########
+            self.deviceControl.subject_state = "FIRE"
             i += 1
             time.sleep(self.deviceControl.pause)
         print("End Thread ...")
@@ -312,9 +315,14 @@ class MassageDeviceControl:
         self.device.programm(mode,level) ##########
 
     def startProgrammRandom(self):
+        #self.rand_mode = random.randint(1,7)
+        #self.rand_level = random.randint(self.min_level,self.max_level)
+        self.programm(self.rand_mode,self.rand_level)
+
+    def genProgrammRandomLevelMode(self):
         self.rand_mode = random.randint(1,7)
         self.rand_level = random.randint(self.min_level,self.max_level)
-        self.programm(self.rand_mode,self.rand_level)
+        #self.programm(self.rand_mode,self.rand_level)
     
     """
     Know its observers. Any number of Observer objects may observe a
