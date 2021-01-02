@@ -19,6 +19,14 @@ import logging
 import websockets
 
 import RPi.GPIO as GPIO
+
+#if sys.platform == 'win32':  # pragma: no cover
+#    from .windows_events import *
+#    __all__ += windows_events.__all__
+#else:
+#    from .unix_events import *  # pragma: no cover
+#    __all__ += unix_events.__all__
+
 import time
 import random
 import threading
@@ -363,6 +371,16 @@ class WsWebsocket(Observer):
         #self.notify_live_level()
         #await self.notify_live_mode()
         #await self.notify_level()
+        loop = asyncio.get_event_loop()
+        future = asyncio.run_coroutine_threadsafe(self.coro_func(), loop)
+        result = future.result()
+        print(result)
+
+    async def coro_func(self):
+        await self.notify_live_level()
+        await self.notify_live_mode()
+        await self.notify_level()
+        return "DONE"
 
     def state_event(self):
         return json.dumps({"type": "state", **self.STATE})
