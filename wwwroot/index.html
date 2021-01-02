@@ -277,7 +277,8 @@
 		</div>
 		
 		<script>
-            var btnPowerOn = document.querySelector('.btnPowerOn'),
+			var ip = location.host,
+				btnPowerOn = document.querySelector('.btnPowerOn'),
 				btnPowerOff = document.querySelector('.btnPowerOff'),
 				labPower1 = document.querySelector('.labPower1'),
 				labPower2 = document.querySelector('.labPower2'),
@@ -303,8 +304,9 @@
 				btnStartDelayPlus = document.querySelector('.btnStartDelayPlus'),
 				btnStartDelayMinus = document.querySelector('.btnStartDelayMinus'),
 				labStartDelay = document.querySelector('.labStartDelay'),
-                users = document.querySelector('.users'),
-                websocket = new WebSocket("ws://192.168.1.133:6789/");
+				users = document.querySelector('.users'),
+				websocket = new WebSocket("ws://" + ip + ":6789/");
+                //websocket = new WebSocket("ws://192.168.1.133:6789/");
 
 			btnPowerOn.onclick = function (event) {
                 websocket.send(JSON.stringify({action: 'btnPowerOn'}));
