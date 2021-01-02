@@ -164,7 +164,7 @@ class ProgrammTask:
             time.sleep(self.deviceControl.pause)
         print("End Thread ...")
         self.deviceControl.powerOn = False
-        self.deviceControl.subject_state = "FIRE"
+        self.deviceControl.subject_state = "END"
 
 
 class MassageDeviceControl:
@@ -381,10 +381,10 @@ class WsWebsocket(Observer):
     def update(self, arg):
         self._observer_state = arg
         print("Observer infomiert, message: " + str(arg))
-        #self.notify_live_level()
-        #await self.notify_live_mode()
-        #await self.notify_level()
-        future = asyncio.run_coroutine_threadsafe(self.coro_func(), self.loop)
+        if str(arg) == "END":
+            future = asyncio.run_coroutine_threadsafe(self.coro_func_end(), self.loop)
+        else:
+            future = asyncio.run_coroutine_threadsafe(self.coro_func(), self.loop)
         result = future.result()
         print(result)
 
@@ -392,6 +392,13 @@ class WsWebsocket(Observer):
         await self.notify_live_level()
         await self.notify_live_mode()
         await self.notify_level()
+        return "DONE"
+
+    async def coro_func_end(self):
+        await self.notify_live_level()
+        await self.notify_live_mode()
+        await self.notify_level()
+        await self.notify_random_power_off()
         return "DONE"
 
     def set_event_loop(self, loop):
@@ -429,6 +436,9 @@ class WsWebsocket(Observer):
 
     def duration_event(self):
         return json.dumps({"type": "labRepDur", "value": self.deviceControl.get_duration()})
+
+    def random_power_off(self):
+        return json.dumps({"type": "randomPowerOff", "value": "true"})
 
     async def notify_state(self):
         if self.USERS:  # asyncio.wait doesn't accept an empty list
@@ -483,6 +493,11 @@ class WsWebsocket(Observer):
     async def notify_duration(self):
         if self.USERS:  # asyncio.wait doesn't accept an empty list
             message = self.duration_event()
+            await asyncio.wait([user.send(message) for user in self.USERS])
+
+    async def notify_random_power_off(self):
+        if self.USERS:  # asyncio.wait doesn't accept an empty list
+            message = self.random_power_off()
             await asyncio.wait([user.send(message) for user in self.USERS])
 
     async def register(self, websocket):

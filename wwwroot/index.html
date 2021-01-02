@@ -347,6 +347,13 @@
 							btnPowerOff.disabled = true;
 						}
                         break;
+					case 'randomPowerOff':
+						labPower1.textContent = "STOPPED";
+						labPower2.textContent = "OFF";
+						btnMode.disabled = false;
+						btnPowerOn.disabled = false;
+						btnPowerOff.disabled = true;
+                        break;
                     case 'level':
 						labElectricity.textContent = data.value;
 						break;
