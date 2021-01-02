@@ -605,10 +605,10 @@ class WsWebsocket(Observer):
 
                 elif data["action"] == "btnStartDelayPlus":
                     self.deviceControl.set_start_delay_increase()
-                    await self.start_delay_event()
+                    await self.notify_start_delay()
                 elif data["action"] == "btnStartDelayMinus":
                     self.deviceControl.set_start_delay_decrease()
-                    await self.start_delay_event()
+                    await self.notify_start_delay()
 
                 else:
                     #logging.error("unsupported event: {}", data)
