@@ -242,6 +242,19 @@
 					<button class="button btnRepDurMinus">-</button>
 				</div>
 			</div>
+			<p>Determine the start delay duration (s):</p>
+			<div class="w3-container">
+				<div class="w3-container w3-third">
+					<button class="button btnStartDelayPlus">+</button>
+				</div>
+				<div class="w3-container w3-third">
+					<label>DURATION</label>
+					<div class="labStartDelay">?</div>
+				</div>
+				<div class="w3-container w3-third">
+					<button class="button btnStartDelayMinus">-</button>
+				</div>
+			</div>
 		</div>
 		<div class="w3-container w3-third">
 			<h2>Current Device Status</h2>
@@ -287,6 +300,9 @@
 				btnRepDurPlus = document.querySelector('.btnRepDurPlus'),
 				btnRepDurMinus = document.querySelector('.btnRepDurMinus'),
 				labRepDur = document.querySelector('.labRepDur'),
+				btnStartDelayPlus = document.querySelector('.btnStartDelayPlus'),
+				btnStartDelayMinus = document.querySelector('.btnStartDelayMinus'),
+				labStartDelay = document.querySelector('.labStartDelay'),
                 users = document.querySelector('.users'),
                 websocket = new WebSocket("ws://192.168.1.133:6789/");
 
@@ -328,6 +344,12 @@
 			}
 			btnRepDurMinus.onclick = function (event) {
                 websocket.send(JSON.stringify({action: 'btnRepDurMinus'}));
+			}
+			btnStartDelayPlus.onclick = function (event) {
+                websocket.send(JSON.stringify({action: 'btnStartDelayPlus'}));
+			}
+			btnStartDelayMinus.onclick = function (event) {
+                websocket.send(JSON.stringify({action: 'btnStartDelayMinus'}));
 			}
             websocket.onmessage = function (event) {
                 data = JSON.parse(event.data);
@@ -381,6 +403,9 @@
 						break;
 					case 'labRepDur':
 						labRepDur.textContent = data.value;
+						break;
+					case 'labStartDelay':
+						labStartDelay.textContent = data.value;
                         break;
                     case 'users':
                         users.textContent = (

@@ -146,7 +146,8 @@ class ProgrammTask:
       
     def run(self):
         print("Start Thread ...")
-        i = 1 
+        i = 1
+        time.sleep(self.deviceControl.start_delay)
         while self._running and i <= self.deviceControl.repetition:
             self.deviceControl.genProgrammRandomLevelMode()
             self.deviceControl.liveMode = self.deviceControl.rand_mode
@@ -185,6 +186,7 @@ class MassageDeviceControl:
         self.thread = 0 
         self.repetition = 1
         self.duration = 10
+        self.start_delay = 0
         self.pause = 10
         # Subject vars:
         self._observers = set()
@@ -281,6 +283,19 @@ class MassageDeviceControl:
 
     def get_duration(self):
         return self.duration
+
+    def set_start_delay_increase(self):
+        self.start_delay = self.start_delay + 60
+        if self.start_delay > 300:
+            self.start_delay = 300
+
+    def set_start_delay_decrease(self):
+        self.start_delay = self.start_delay - 60
+        if self.start_delay < 0:
+            self.start_delay = 0
+
+    def get_start_delay(self):
+        return self.start_delay
 
     def start(self):
         self.powerOn = True
@@ -437,6 +452,9 @@ class WsWebsocket(Observer):
     def duration_event(self):
         return json.dumps({"type": "labRepDur", "value": self.deviceControl.get_duration()})
 
+    def start_delay_event(self):
+        return json.dumps({"type": "labStartDelay", "value": self.deviceControl.get_start_delay()})
+
     def random_power_off(self):
         return json.dumps({"type": "randomPowerOff", "value": "true"})
 
@@ -495,6 +513,11 @@ class WsWebsocket(Observer):
             message = self.duration_event()
             await asyncio.wait([user.send(message) for user in self.USERS])
 
+    async def notify_start_delay(self):
+        if self.USERS:  # asyncio.wait doesn't accept an empty list
+            message = self.start_delay_event()
+            await asyncio.wait([user.send(message) for user in self.USERS])
+
     async def notify_random_power_off(self):
         if self.USERS:  # asyncio.wait doesn't accept an empty list
             message = self.random_power_off()
@@ -512,6 +535,7 @@ class WsWebsocket(Observer):
         await self.notify_randMax()
         await self.notify_repetition()
         await self.notify_duration()
+        await self.start_delay_event()
 
     async def unregister(self, websocket):
         self.USERS.remove(websocket)
@@ -578,6 +602,13 @@ class WsWebsocket(Observer):
                 elif data["action"] == "btnRepDurMinus":
                     self.deviceControl.set_duration_decrease()
                     await self.notify_duration()
+
+                elif data["action"] == "btnStartDelayPlus":
+                    self.deviceControl.set_start_delay_increase()
+                    await self.start_delay_event()
+                elif data["action"] == "btnStartDelayMinus":
+                    self.deviceControl.set_start_delay_decrease()
+                    await self.start_delay_event()
 
                 else:
                     #logging.error("unsupported event: {}", data)
