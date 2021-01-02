@@ -364,6 +364,7 @@ class WsWebsocket(Observer):
         self.deviceControl = deviceControl
         self.STATE ={"value": 0}
         self.USERS = set()
+        self.loop = None
 
     def update(self, arg):
         self._observer_state = arg
@@ -371,8 +372,7 @@ class WsWebsocket(Observer):
         #self.notify_live_level()
         #await self.notify_live_mode()
         #await self.notify_level()
-        loop = asyncio.get_event_loop()
-        future = asyncio.run_coroutine_threadsafe(self.coro_func(), loop)
+        future = asyncio.run_coroutine_threadsafe(self.coro_func(), self.loop)
         result = future.result()
         print(result)
 
@@ -581,6 +581,7 @@ def main():
     print("Starte Websocket ...")
     start_server = websockets.serve(wsWebsocket.counter, "", 6789)
     asyncio.get_event_loop().run_until_complete(start_server)
+    self.loop = asyncio.get_event_loop()
     asyncio.get_event_loop().run_forever()
     
 
