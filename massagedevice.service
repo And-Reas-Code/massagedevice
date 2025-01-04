@@ -1,0 +1,10 @@
+[Unit]
+Description=Massagedevice-Service
+
+[Service]
+Type=oneshot
+ExecStart=/home/andreas/massagedevice/service.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
